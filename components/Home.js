@@ -23,8 +23,17 @@ import Apply from './Apply';
 export default class Home extends Component{
   
   static navigationOptions = {
-    title: <Image source={require('../assets/siska.png')} style={{paddingLeft: 50, height: 30, width:100 }}/>,
-    // title: 'Tittle'
+    headerTitle: ( 
+      <Image style={{ 
+        height: 30,
+         width:80, 
+         alignSelf: 'center', 
+         resizeMode: 'contain',
+        paddingLeft: 50}} 
+         source={require('../assets/siska.png')} 
+         /> 
+    ),
+    //  title: 'Tittle'
     // headerRight:  <Icon name='ios-search' color="grey" size={24} style={{ paddingRight: 20 }}/>,
   }
   
@@ -53,7 +62,7 @@ export default class Home extends Component{
         tabBarLabel: 'Apply Job',
         tabBarTextFontSize: 18,
         tabBarIcon: ({tintColor}) => (
-          <Icon name='ios-folder' color={tintColor} size={20} />
+          <Icon name='ios-briefcase' color={tintColor} size={20} />
         )
       }
     },
