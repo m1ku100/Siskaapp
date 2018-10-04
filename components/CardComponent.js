@@ -10,14 +10,14 @@ export default class cardComponent extends Component{
         <Card>
             <CardItem>
                 <Left>
-                    <Thumbnail source={require('../assets/agency.png')} />
+                    <Thumbnail source={{uri: this.props.img }} />
                     <Body>
                         <Text style={styles.text}>{this.props.jobtitle}</Text>
                         <Text>{this.props.company}</Text>
                         <View style={{flexDirection: 'row'}}>
-                            <Text style={{ fontSize:12 }}> <Icon name='ios-pin' style={{ fontSize:12 }} /> Location |
+                            <Text style={{ fontSize:12 }}> <Icon name='ios-pin' style={{ fontSize:12 }} /> {this.props.location} |
                             </Text> 
-                            <Text style={{ fontSize:12 }}> Salary (IDR) 
+                            <Text style={{ fontSize:12 }}> {this.props.salary} (IDR)
                             </Text> 
                         </View>
                     </Body>

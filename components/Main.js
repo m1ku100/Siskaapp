@@ -59,8 +59,10 @@ export default class Splash extends Component{
             <FlatList
               data={this.state.dataSource}
               renderItem={({item}) => 
-                <CardComponent company={item.user.name} jobtitle={item.judul} />
-              } keyExtractor={({id}) => id.toString()}
+                <CardComponent company={item.user.name} jobtitle={item.judul} salary={item.salary} location={item.city} img={item.user.ava} />
+              } 
+              keyExtractor={({id}) => id.toString()}
+              onEndReached={this.handleLoadMore}
             />
         </View>
         </ScrollView>
