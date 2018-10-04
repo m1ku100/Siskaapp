@@ -1,7 +1,12 @@
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View} from 'react-native';
+import { Platform, StyleSheet, Text, View} from 'react-native';
 
 export default class Apply extends Component{
+  constructor(props){
+    super(props);
+    this.state ={ isLoading: true}
+  }
+
     render() {
       return (
         <View style={styles.container}>
