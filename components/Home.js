@@ -10,7 +10,7 @@ import {
   Image
 } from 'react-native';
 import { createMaterialTopTabNavigator } from 'react-navigation';
-import { createBottomTabNavigator } from 'react-navigation';
+import { createStackNavigator } from 'react-navigation';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 //Screen
@@ -18,28 +18,32 @@ import Profile from './Profile';
 import Help from './Help';
 import Main from './Main';
 import Apply from './Apply';
+import Splash from './Splash';
+import Detail from './Detail';
 
 
 export default class Home extends Component{
   
+  //Header For main Tab Screen
   static navigationOptions = {
-    headerTitle: ( 
-      <Image style={{ 
-        height: 30,
-         width:80, 
-         alignSelf: 'center', 
-         resizeMode: 'contain',
-        paddingLeft: 50}} 
-         source={require('../assets/siska.png')} 
-         /> 
-    ),
-    //  title: 'Tittle'
+    // headerTitle: ( 
+    //   <Image style={{ 
+    //     height: 30,
+    //      width:80, 
+    //      alignSelf: 'center', 
+    //      resizeMode: 'contain',
+    //     paddingLeft: 50}} 
+    //      source={require('../assets/siska.png')} 
+    //      /> 
+    // ),
+    title: 'Tittle'
     // headerRight:  <Icon name='ios-search' color="grey" size={24} style={{ paddingRight: 20 }}/>,
+    
   }
   
   render() {
     return (
-      <AppTabNav/>
+      <StackNav/>
       );
     }
   }
@@ -78,7 +82,7 @@ export default class Home extends Component{
     },
     Help: {
       screen: Help,
-      navigationOptions: {
+      navigationOptions:{
         tabBarLabel: 'Help',
         tabBarTextFontSize: 18,
         tabBarIcon: ({tintColor}) => (
@@ -102,7 +106,37 @@ export default class Home extends Component{
     }
   })
 
-  
+  const StackNav = createStackNavigator({
+    Main: {
+      screen: AppTabNav,
+      navigationOptions: ({ navigation }) => ({
+        title: navigation.getParam('title','Title'),
+        headerBackTitle: 'A much too long text for back button from B to A'
+      }),
+    },
+    Splash:{
+      screen: Splash,
+      navigationOptions: () => ({
+        title: 'Spalsh',
+        headerBackTitle: 'A much too long text for back button from B to A'
+      }),
+    },
+    Detail:{
+      screen: Detail,
+      navigationOptions: () => ({
+        title: 'Job Detail',
+        headerTitleStyle:{
+          alignSelf: 'center',
+          fontWeight:'500',
+          paddingLeft: 85,
+          fontSize:20,
+          marginTop:5,
+          
+        },
+      })
+    }
+  });
+
   const styles = StyleSheet.create({
     container: {
       flex: 1,

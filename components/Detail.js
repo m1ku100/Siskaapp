@@ -2,18 +2,24 @@ import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View, Button} from 'react-native';
 import { createStackNavigator } from 'react-navigation';
 
-import Splash from './Splash';
-
 export default class Profile extends Component{
     render() {
+
+        const { navigation } = this.props;
+        const judul = navigation.getParam('judul', '');
+        //const otherParam = navigation.getParam('otherParam', 'some default value');
+
       return (
+        
+
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <Text>Profile Screen</Text>
+        <Text>This Title : {judul}</Text>
         <Button
           title="Go to Details"
-          onPress={() => this.props.navigation.navigate('Splash')}
+          onPress={() => this.props.navigation.navigate('Home')}
         />
       </View>
+      
       );
     }
 }
@@ -32,4 +38,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: 'white',
   },
+  hr: {
+    borderBottomColor: 'black',
+    borderBottomWidth: 1,
+  }
 });  

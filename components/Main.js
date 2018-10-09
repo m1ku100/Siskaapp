@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
-import {FlatList, ActivityIndicator, Platform, StyleSheet, Text, View, ScrollView, RefreshControl} from 'react-native';
-import { Container, Content, Icon} from 'native-base';
+import {FlatList, ActivityIndicator, Platform, StyleSheet, Text, View, ScrollView, RefreshControl, TouchableOpacity} from 'react-native';
+import { Container, Content, Icon, Button} from 'native-base';
 import { createBottomTabNavigator } from 'react-navigation';
 
 //Screen
@@ -55,16 +55,22 @@ export default class Splash extends Component{
           />
         }
       >
-        <View style={{flex: 1, paddingTop:10}}>
-            <FlatList
-              data={this.state.dataSource}
-              renderItem={({item}) => 
-                <CardComponent company={item.user.name} jobtitle={item.judul} salary={item.salary} location={item.city} img={item.user.ava} />
-              } 
-              keyExtractor={({id}) => id.toString()}
-              onEndReached={this.handleLoadMore}
-            />
-        </View>
+      
+          <TouchableOpacity style={{flex: 1, }}>
+              <FlatList
+                data={this.state.dataSource}
+                renderItem={({item}) => 
+                  <TouchableOpacity onPress={() => this.props.navigation.navigate('Detail',{
+                    judul: item.judul
+                  })}>
+                    <CardComponent company={item.user.name} jobtitle={item.judul} salary={item.salary} location={item.city} img={item.user.ava} />
+                  </TouchableOpacity>
+                } 
+                keyExtractor={({id}) => id.toString()}
+                onEndReached={this.handleLoadMore}
+              />
+          </TouchableOpacity>
+        
         </ScrollView>
       );
     }

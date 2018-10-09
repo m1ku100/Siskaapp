@@ -1,18 +1,19 @@
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View} from 'react-native';
+import {Platform, StyleSheet, Text, View, Button} from 'react-native';
+
+
 
 export default class Splash extends Component{
-    // componentDidMount(){
-    //     setInterval(()=>{
-    //         this.props.navigation.navigate('Main');
-    //     },3000)
-    // }
-
+    
     render() {
       return (
-        <View style={styles.container}>
-            <Text style={styles.text}>Splash Screen</Text>
-        </View>
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <Text>Splash Screen</Text>
+        <Button
+          title="Go Back"
+          onPress={() => this.props.navigation.navigate('Profile')}
+        />
+      </View>
       );
     }
 }

@@ -14,11 +14,12 @@ import { StackNavigator } from 'react-navigation';
 
 //screen
 import Home from './components/Home';
-import Profile from './components/Profile';
-import Help from './components/Help';
+
 
 
 export default class App extends Component{
+
+	
 	render() {
 		return (
 			<AppStackNav />
@@ -31,7 +32,7 @@ const AppStackNav = StackNavigator({
 	Main: {
 		screen: Home
 	}
-})
+	},{ headerMode: 'none' });
 
 	
 	const styles = StyleSheet.create({
