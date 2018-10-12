@@ -96,7 +96,7 @@ export default class Home extends Component{
     animationEnabled: true,
 
     tabBarOptions:{
-      activeTintColor: 'skyblue',
+      activeTintColor: '#fa5555',
       inactiveTintColor: 'grey',
       showIcon: true,
       style:{

@@ -61,7 +61,13 @@ export default class Splash extends Component{
                 data={this.state.dataSource}
                 renderItem={({item}) => 
                   <TouchableOpacity onPress={() => this.props.navigation.navigate('Detail',{
-                    judul: item.judul
+                    judul: item.judul,
+                    company: item.user.name,
+                    img: item.user.ava,
+                    salary: item.salary,
+                    location: item.city,
+                    update: item.updated_at,
+                    syarat: item.syarat
                   })}>
                     <CardComponent company={item.user.name} jobtitle={item.judul} salary={item.salary} location={item.city} img={item.user.ava} />
                   </TouchableOpacity>
