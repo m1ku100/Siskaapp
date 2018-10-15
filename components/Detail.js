@@ -4,16 +4,36 @@ import { createStackNavigator } from 'react-navigation';
 import { Card, Thumbnail, CardItem, Right, Left, Body, Icon, Container, Content, Header,  Button,} from 'native-base';
 
 export default class Profile extends Component{
-    render() {
+    constructor(props) {
+        super(props);
+        this.state = {
+            isLoading: true,
+            dataSource: '',
+            user: '',
+        }
+    }
 
+    componentDidMount = () => {
         const { navigation } = this.props;
-        const judul = navigation.getParam('judul', '');
-        const img = navigation.getParam('img', '');
-        const company = navigation.getParam('company', '');
-        const update = navigation.getParam('update', '');
+        const id = navigation.getParam('id', '');
+        fetch('http://192.168.16.14:8000/api/clients/vacancies/'+id,{
+           method: 'GET'
+        })
+        .then((response) => response.json())
+        .then((responseJson) => {
+           console.log(responseJson);
+ 
+           this.setState({
+            dataSource: responseJson,
+            user: responseJson.user
+           })
+        })
+        .catch((error) => {
+           console.error(error);
+        });
+     }
 
-        //const otherParam = navigation.getParam('otherParam', 'some default value');
-
+    render() {
       return (
         
         <Container style={styles.container}>
@@ -27,7 +47,7 @@ export default class Profile extends Component{
                     {/**User photo takes 1/3rd of view horizontally **/}
                     <View
                         style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start' }}>
-                        <Image source={{uri: img }}
+                        <Image source={{uri: this.state.user.ava }}
                             style={{ width: 75, height: 75, borderRadius: 37.5 }} />
 
                     </View>
@@ -37,13 +57,13 @@ export default class Profile extends Component{
 
                         {/** Stats **/}
                         <View
-                            style={{
+                            style={{  
                                 flexDirection: 'row',
                                 justifyContent: 'space-around',
                                 alignItems: 'flex-end'
                             }}>
                             <View style={{ alignItems: 'center' }}>
-                                <Text>20</Text>
+                                <Text>{ this.state.dataSource.total }</Text>
                                 <Text style={{ fontSize: 10, color: 'grey' }}>Posts</Text>
                             </View>
                         </View>
@@ -77,9 +97,9 @@ export default class Profile extends Component{
 
                 <View style={{ paddingBottom: 10 }}>
                     <View style={{ paddingHorizontal: 10 }}>
-                        <Text style={{ fontWeight: 'bold',  }}>{judul}</Text>
-                        <Text >{company}</Text>
-                        <Text style={styles.update}>{update}</Text>
+                        <Text style={{ fontWeight: 'bold',  }}>{this.state.dataSource.judul}</Text>
+                        <Text >{this.state.user.name}</Text>
+                        <Text style={styles.update}>{this.state.dataSource.updated_at}</Text>
                     </View>
                 </View>
 

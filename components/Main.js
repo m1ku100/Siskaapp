@@ -23,7 +23,7 @@ export default class Splash extends Component{
     return fetch('http://192.168.16.14:8000/api/clients/vacancies')
       .then((response) => response.json())
       .then((responseJson) => {
-
+       
         this.setState({
           isLoading: false,
           dataSource: responseJson
@@ -61,6 +61,7 @@ export default class Splash extends Component{
                 data={this.state.dataSource}
                 renderItem={({item}) => 
                   <TouchableOpacity onPress={() => this.props.navigation.navigate('Detail',{
+                    id: item.id,
                     judul: item.judul,
                     company: item.user.name,
                     img: item.user.ava,
