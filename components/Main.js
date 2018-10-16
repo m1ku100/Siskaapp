@@ -9,7 +9,10 @@ import CardComponent from './CardComponent';
 export default class Splash extends Component{
   constructor(props){
     super(props);
-    this.state ={ isLoading: true, refreshing:false}
+    this.state ={ 
+      isLoading: true, 
+      refreshing:false
+    }
   }
 
   _onRefresh = () => {
@@ -48,12 +51,14 @@ export default class Splash extends Component{
   
       return (
         <ScrollView
+        pagingEnabled={true}
         refreshControl={
           <RefreshControl
             refreshing={this.state.refreshing}
             onRefresh={this._onRefresh}
           />
         }
+        
       >
       
           <TouchableOpacity style={{flex: 1, }}>

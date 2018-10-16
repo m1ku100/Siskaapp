@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View,  Image} from 'react-native';
+import {Platform, StyleSheet, Text, View,  Image,  ScrollView, ActivityIndicator,} from 'react-native';
 import { createStackNavigator } from 'react-navigation';
-import { Card, Thumbnail, CardItem, Right, Left, Body, Icon, Container, Content, Header,  Button,} from 'native-base';
+import { Icon, Container, Content, Button,} from 'native-base';
+import HTML from 'react-native-render-html';
 
 export default class Profile extends Component{
     constructor(props) {
@@ -25,7 +26,8 @@ export default class Profile extends Component{
  
            this.setState({
             dataSource: responseJson,
-            user: responseJson.user
+            user: responseJson.user,
+            isLoading: false,
            })
         })
         .catch((error) => {
@@ -34,6 +36,14 @@ export default class Profile extends Component{
      }
 
     render() {
+        if(this.state.isLoading){
+            return(
+                <View style={{flex: 1, padding: 20}}>
+                  <ActivityIndicator/>
+                </View>
+              )
+        }
+
       return (
         
         <Container style={styles.container}>
@@ -54,20 +64,17 @@ export default class Profile extends Component{
 
                     {/**User Stats take 2/3rd of view horizontally **/}
                     <View style={{ flex: 3 }}>
+                        <View style={{ paddingHorizontal: 10, paddingTop: 10}}>
+                        <Text style={ styles.titlecolor}>{this.state.dataSource.judul}</Text>
+                        <Text >{this.state.user.name}</Text>
+                        <Text>Total Applicants: { this.state.dataSource.total }</Text>
+                        <Text style={styles.update}>Last Updated : {this.state.dataSource.updated_at}</Text>
+                    </View>
+                    </View>
+                </View>
 
-                        {/** Stats **/}
-                        <View
-                            style={{  
-                                flexDirection: 'row',
-                                justifyContent: 'space-around',
-                                alignItems: 'flex-end'
-                            }}>
-                            <View style={{ alignItems: 'center' }}>
-                                <Text>{ this.state.dataSource.total }</Text>
-                                <Text style={{ fontSize: 10, color: 'grey' }}>Posts</Text>
-                            </View>
-                        </View>
-
+                <View style={{ paddingBottom: 10 , flex: 3}}>
+                    {/** Stats **/}
                         {/**Edit profile and Settings Buttons **/}
                         <View style={{ flexDirection: 'row', alignItems: 'flex-start', paddingTop: 10 }}>
 
@@ -92,24 +99,32 @@ export default class Profile extends Component{
                                     <Icon name="ios-bookmark" style={{ color: 'white' }}></Icon></Button>
                             </View>
                         </View>{/**End edit profile**/}
-                    </View>
-                </View>
-
-                <View style={{ paddingBottom: 10 }}>
-                    <View style={{ paddingHorizontal: 10 }}>
-                        <Text style={{ fontWeight: 'bold',  }}>{this.state.dataSource.judul}</Text>
-                        <Text >{this.state.user.name}</Text>
-                        <Text style={styles.update}>{this.state.dataSource.updated_at}</Text>
-                    </View>
                 </View>
 
 
             </View>
+            <View>
+                <View style={{ justifyContent: 'space-around', borderTopWidth: 1, borderTopColor: '#eae5e5', paddingRight:15, paddingLeft:15  }}>
+                    <View style={{ flex:1, paddingTop:10}}>
+                        <Text style={ styles.textinfo}>Responsibilities</Text>
+                        <View>
+                            <HTML html={""+ this.state.dataSource.tanggungjawab   }  />
+                        </View>
+                    </View>
 
+                    <View style={{ flex:1 , paddingTop:10 }}>
+                        <Text style={ styles.textinfo}>Requirements</Text>
+                        <View>
+                        <HTML html={""+ this.state.dataSource.syarat + "" }  />
+                        </View>
+                    </View>
 
-            <View >
-                <View style={{ flexDirection: 'row', justifyContent: 'space-around', borderTopWidth: 1, borderTopColor: '#eae5e5' }}>
-                   
+                    <View style={{ flex:1 , paddingTop:10 }}>
+                        <Text style={ styles.textinfo}>About the Company</Text>
+                        <View style={{ alignItems: 'center' }}>
+                        <HTML html={""+ this.state.dataSource.tentang  }  />
+                        </View>
+                    </View>
                 </View>
                 {/** Height =width/3 so that image sizes vary according to size of the phone yet remain squares **/}
             </View>
@@ -128,6 +143,15 @@ const styles = StyleSheet.create({
   },
   text: {
     color: 'white',
+  },
+  textinfo: {
+   
+    fontWeight: 'bold', 
+  },
+  titlecolor:{
+    
+    fontWeight: 'bold', 
+    fontSize: 20,
   },
   hr: {
     borderBottomColor: 'black',
