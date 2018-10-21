@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import { Platform, StyleSheet, Text, View, FlatList, ActivityIndicator,} from 'react-native';
+import { Icon, Container, Content, Right, Left, Body,} from 'native-base';
 import { List, ListItem } from "react-native-elements";
 
 export default class Apply extends Component{
@@ -31,6 +32,7 @@ export default class Apply extends Component{
 
   render() {
     return (
+      <Container style={styles.container}>
       <View>
         <List>
           <FlatList
@@ -51,6 +53,7 @@ export default class Apply extends Component{
           />
         </List>
       </View>
+      </Container>
     );
   }
 }
@@ -58,8 +61,6 @@ export default class Apply extends Component{
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
     backgroundColor: 'white',
   },
   text: {

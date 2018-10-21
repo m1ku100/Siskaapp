@@ -14,6 +14,20 @@ export default class Profile extends Component{
         }
     }
 
+    /**
+     * For Apply Vacancy Event
+     */
+    __onpressApply(){
+
+    }
+
+    /**
+     * For Bookmark Vacancy Event
+     */
+    __onpressBookmark(){
+
+    }
+
     componentDidMount = () => {
         const { navigation } = this.props;
         const id = navigation.getParam('id', '');
@@ -100,9 +114,27 @@ export default class Profile extends Component{
                             </View>
                         </View>{/**End edit profile**/}
                 </View>
-
-
             </View>
+            
+            <View>
+                <View style={{ justifyContent: 'space-around', borderTopWidth: 1, borderTopColor: '#eae5e5', paddingRight:15, paddingLeft:15, paddingBottom: 15}}>
+                    <View style={{ flexDirection: 'row' ,flex:1, paddingTop:5}}>
+                            <Icon name="ios-pin" style={{ fontSize:14, color: '#333' }}></Icon>
+                            <Text>    { this.state.dataSource.city }</Text>
+                    </View>
+
+                    <View style={{ flexDirection: 'row' ,flex:1, paddingTop:5}}>
+                            <Icon name="ios-briefcase" style={{ fontSize:14, color: '#333' }}></Icon>
+                            <Text>   {this.state.dataSource.job_func}</Text>
+                    </View>
+
+                    <View style={{ flexDirection: 'row' ,flex:1, paddingTop:5}}>
+                            <Icon name="ios-school" style={{ fontSize:14 , color: '#333'}}></Icon>
+                            <Text>   Min. {this.state.dataSource.degrees}</Text>
+                    </View>
+                </View>
+            </View>
+
             <View>
                 <View style={{ justifyContent: 'space-around', borderTopWidth: 1, borderTopColor: '#eae5e5', paddingRight:15, paddingLeft:15  }}>
                     <View style={{ flex:1, paddingTop:10}}>

@@ -50,6 +50,8 @@ export default class Splash extends Component{
       }
   
       return (
+        <Container style={styles.container}>
+        <Content>
         <ScrollView
         pagingEnabled={true}
         refreshControl={
@@ -84,15 +86,14 @@ export default class Splash extends Component{
           </TouchableOpacity>
         
         </ScrollView>
+        </Content>
+        </Container>
       );
     }
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
     backgroundColor: 'white',
   },
   text: {
