@@ -20,6 +20,8 @@ import Main from './Main';
 import Apply from './Apply';
 import Splash from './Splash';
 import Detail from './Detail';
+import Feed from './Feed';
+import About from './About';
 
 
 export default class Home extends Component{
@@ -111,6 +113,20 @@ export default class Home extends Component{
       screen: AppTabNav,
       navigationOptions: ({ navigation }) => ({
         title: navigation.getParam('title','Title'),
+        headerBackTitle: 'A much too long text for back button from B to A'
+      }),
+    },
+    Feed:{
+      screen: Feed,
+      navigationOptions: () => ({
+        title: 'Feedback',
+        headerBackTitle: 'A much too long text for back button from B to A'
+      }),
+    },
+    About:{
+      screen: About,
+      navigationOptions: () => ({
+        title: 'About SISKA',
         headerBackTitle: 'A much too long text for back button from B to A'
       }),
     },
