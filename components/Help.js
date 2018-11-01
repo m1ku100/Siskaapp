@@ -21,7 +21,7 @@ export default class Help extends Component{
               <TouchableOpacity onPress={() => this.props.navigation.navigate('About')}>
               <View style={{ paddingTop:15 }}>
                 <Button iconLeft transparent danger>
-                  <Icon name='ios-settings'/>
+                  <Icon name='ios-contacts'/>
                   <Text style={{ fontWeight: '500' }}>      ABOUT US</Text>
               </Button>
               </View>

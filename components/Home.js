@@ -112,22 +112,43 @@ export default class Home extends Component{
     Main: {
       screen: AppTabNav,
       navigationOptions: ({ navigation }) => ({
-        title: navigation.getParam('title','Title'),
-        headerBackTitle: 'A much too long text for back button from B to A'
+        title: navigation.getParam('title','SISKA'),
+        headerTitleStyle:{
+          alignSelf: 'center',
+          fontWeight:'500',
+          paddingLeft: 160,
+          fontSize:20,
+          marginTop:5,
+          
+        },
       }),
     },
     Feed:{
       screen: Feed,
       navigationOptions: () => ({
         title: 'Feedback',
-        headerBackTitle: 'A much too long text for back button from B to A'
+        headerTitleStyle:{
+          alignSelf: 'center',
+          fontWeight:'500',
+          paddingLeft: 85,
+          fontSize:20,
+          marginTop:5,
+          
+        },
       }),
     },
     About:{
       screen: About,
       navigationOptions: () => ({
         title: 'About SISKA',
-        headerBackTitle: 'A much too long text for back button from B to A'
+        headerTitleStyle:{
+          alignSelf: 'center',
+          fontWeight:'500',
+          paddingLeft: 85,
+          fontSize:20,
+          marginTop:5,
+          
+        },
       }),
     },
     Splash:{

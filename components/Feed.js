@@ -1,65 +1,79 @@
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View,  TouchableOpacity} from 'react-native';
-import { Icon, Container, Content, Right, Left, Body, Button} from 'native-base';
+import {Platform, StyleSheet, Text, View,  TouchableOpacity, TextInput} from 'react-native';
+import { Icon, Container, Content, Right, Left, Body, Button,} from 'native-base';
 import { Avatar } from 'react-native-elements';
 
 import Splash from './Splash';
 
 export default class Feed extends Component{
-    render() {
+    
+  constructor(){
+    super();
+    this.state={
+      message: ''
+    }
+  }
+
+  updateValue(text, field){
+      
+    if(field=='message')
+      {
+        this.setState({
+          message:text
+        })
+      }
+  }
+
+  submit(){
+    // let collection={}
+    // collection.message=this.state.message,
+    // alert(collection.message);
+
+    const {message} = this.state;
+
+    fetch('http://192.168.16.14:8000/api/feed', {
+			method: 'post',
+			header:{
+				'Accept': 'application/json',
+				'Content-type': 'application/json'
+			},
+			body:JSON.stringify({
+				message: message
+			})
+			
+		})
+		.then((response) => response.json())
+			.then((responseJson) =>{
+				alert(responseJson);
+			})
+			.catch((error)=>{
+				console.error(error);
+			});
+
+
+  }
+
+  render() {
       return (
         <Container style={styles.container}>
           <Content>
             
-            <View style={{ paddingTop:10, paddingBottom: 15,  }}>
-            <TouchableOpacity style={{flex: 1, }}  onPress={() => this.props.navigation.navigate('Splash')}>
-                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', flexDirection: 'row' }}>
-                <Avatar
-                large
-                rounded
-                source={{uri: "https://s3.amazonaws.com/uifaces/faces/twitter/brynn/128.jpg"}}
-                onPress={() => console.log("Works!")}
-                activeOpacity={0.9}
-                />
-                   <View style={{ flexDirection: 'column' , paddingLeft: 15,}}>
-                   <Text style={{ fontWeight: '400' }}>Username</Text> 
-                   <Text>View and Edit Resume</Text> 
+            <View style={{ paddingTop:10, paddingBottom: 15, paddingLeft: 15, }}>
+                  <Text style={{ fontWeight: '600' }}>Feedback</Text> 
+                   <View style={{ flexDirection: 'column' , paddingLeft: 10, paddingRight:15, paddingTop:20}}>
+                   <TextInput
+                      //onChangeText={(text) =>this.updateValue(text,'message')}
+                      onChangeText= {message => this.setState({message})}
+                      style={{height: 100, borderColor: '#333', borderWidth: 0.5}}
+                    />
                    </View> 
-                  
-                  <Icon name='ios-arrow-forward' style={{ paddingLeft:50 ,fontSize:14}}/>
-                </View>
-                </TouchableOpacity>
-            </View>
-            
-            <View>
-              <View style={{ justifyContent: 'space-around', borderTopWidth: 1, borderTopColor: '#eae5e5', paddingRight:15, paddingLeft:15, paddingBottom: 15}}>
-              <TouchableOpacity>
-              <View style={{ paddingTop:15 }}>
-              <Button iconLeft transparent danger>
-                <Icon name='ios-bookmark'/>
-                <Text style={{ fontWeight: '500' }}>      BOOKMARKED VACANCY</Text>
-             </Button>
-             </View>
-             </TouchableOpacity>
-
-              <TouchableOpacity>
-              <View style={{ paddingTop:15 }}>
-                <Button iconLeft transparent danger>
-                  <Icon name='ios-settings'/>
-                  <Text style={{ fontWeight: '500' }}>      SETTINGS</Text>
-              </Button>
-              </View>
-             </TouchableOpacity>
-
-              <TouchableOpacity>
-                <View style={{ paddingTop:15 }}>
-                  <Button iconLeft transparent danger>
-                    <Icon name='ios-power'/>
-                    <Text style={{ fontWeight: '500' }}>      LOGOUT</Text>
-                </Button>
-                </View>
-             </TouchableOpacity>
-              </View>
+                   <View  style={{ flexDirection: 'row', justifyContent: 'space-around', paddingTop:20 }}>
+                   <TouchableOpacity 
+                    onPress={()=>this.submit()}
+                    style={ styles.submitbtn }>
+                    <Text style={styles.text}> Send </Text>
+                    </TouchableOpacity>
+                   </View>
             </View>
 
           </Content>
@@ -75,9 +89,16 @@ const styles = StyleSheet.create({
     backgroundColor: 'white'
   },
   text: {
-    fontWeight: 'bold',
-    fontSize: 18,
+    fontWeight: '500',
+    fontSize: 14,
     textAlign: 'center',
     color: 'white',
   },
+  submitbtn:{
+    backgroundColor:'#fa5555', 
+    width:300, 
+    height:40,
+    justifyContent:'center',
+    alignContent:'center'
+  }
 });  
