@@ -22,6 +22,8 @@ import Splash from './Splash';
 import Detail from './Detail';
 import Feed from './Feed';
 import About from './About';
+import Login from './Login';
+import Register from './Register';
 
 
 export default class Home extends Component{
@@ -91,7 +93,7 @@ export default class Home extends Component{
           <Icon name='ios-help-circle' color={tintColor} size={20} />
         )
       }
-    }
+    },
   },{
     tabBarPosition: 'bottom',
     swipeEnabled: true,
@@ -141,6 +143,34 @@ export default class Home extends Component{
       screen: About,
       navigationOptions: () => ({
         title: 'About SISKA',
+        headerTitleStyle:{
+          alignSelf: 'center',
+          fontWeight:'500',
+          paddingLeft: 85,
+          fontSize:20,
+          marginTop:5,
+          
+        },
+      }),
+    },
+    Login:{
+      screen: Login,
+      navigationOptions: () => ({
+        title: 'Sign-In',
+        headerTitleStyle:{
+          alignSelf: 'center',
+          fontWeight:'500',
+          paddingLeft: 85,
+          fontSize:20,
+          marginTop:5,
+          
+        },
+      }),
+    },
+    Register:{
+      screen: Register,
+      navigationOptions: () => ({
+        title: 'Sign-Up',
         headerTitleStyle:{
           alignSelf: 'center',
           fontWeight:'500',

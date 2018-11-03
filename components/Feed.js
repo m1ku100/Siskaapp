@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View,  TouchableOpacity, TextInput} from 'react-native';
+import {Platform, StyleSheet, Text, View,  TouchableOpacity, TextInput, Alert} from 'react-native';
 import { Icon, Container, Content, Right, Left, Body, Button,} from 'native-base';
 import { Avatar } from 'react-native-elements';
 
@@ -44,13 +44,15 @@ export default class Feed extends Component{
 		})
 		.then((response) => response.json())
 			.then((responseJson) =>{
-				alert(responseJson);
+			 Alert.alert('Successfull',
+       responseJson,
+        [
+          {text: 'OK', onPress: () => console.log('OK Pressed')},
+        ]);
 			})
 			.catch((error)=>{
 				console.error(error);
 			});
-
-
   }
 
   render() {
