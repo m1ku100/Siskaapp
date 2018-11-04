@@ -156,7 +156,7 @@ export default class Home extends Component{
     Login:{
       screen: Login,
       navigationOptions: () => ({
-        title: 'Sign-In',
+        title: 'Sign In',
         headerTitleStyle:{
           alignSelf: 'center',
           fontWeight:'500',
@@ -170,7 +170,7 @@ export default class Home extends Component{
     Register:{
       screen: Register,
       navigationOptions: () => ({
-        title: 'Sign-Up',
+        title: 'Sign Up',
         headerTitleStyle:{
           alignSelf: 'center',
           fontWeight:'500',

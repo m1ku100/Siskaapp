@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View,  TouchableOpacity, TextInput, Alert} from 'react-native';
+import {Platform, StyleSheet, Text, View,  TouchableOpacity, TextInput, Alert,Image} from 'react-native';
 import { Container, Content } from 'native-base';
 
 export default class Login extends Component{
@@ -25,6 +25,34 @@ export default class Login extends Component{
         return(
             <Container style={styles.container}>
                 <Content>
+                
+                <View style={styles.loginContainer}>
+                    <Image  style={styles.logo} source={require('../assets/siska_mock_type.png')}  />
+                </View>
+
+                <View style={{ paddingTop: 32 }}>
+                <TextInput style = {styles.input} 
+               autoCapitalize="none" 
+               onSubmitEditing={() => this.passwordInput.focus()} 
+               autoCorrect={false} 
+               keyboardType='email-address' 
+               returnKeyType="next" 
+               placeholder='Email or Mobile Num' 
+               placeholderTextColor='grey'
+               
+               />
+
+                <TextInput style = {styles.input}   
+              returnKeyType="go" 
+              ref={(input)=> this.passwordInput = input} 
+              placeholder='Password' 
+              placeholderTextColor='grey' 
+              secureTextEntry/>
+
+                <TouchableOpacity style={styles.buttonContainer} >
+                <Text  style={styles.buttonText}>Sign in</Text>
+                </TouchableOpacity> 
+                </View>
 
                 </Content>
             </Container>
@@ -36,7 +64,9 @@ export default class Login extends Component{
 const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: 'white'
+      backgroundColor: 'white',
+      alignItems: 'center',
+      justifyContent: 'center'
     },
     text: {
       fontWeight: '500',
@@ -50,5 +80,30 @@ const styles = StyleSheet.create({
       height:40,
       justifyContent:'center',
       alignContent:'center'
+    },
+    loginContainer:{
+        alignItems: 'center',
+        flexGrow: 1,
+        justifyContent: 'center'
+    },
+    logo: {
+        width: 300,
+        height: 100
+    },
+    input:{
+        height: 40,
+        backgroundColor: '#FFEEEE',
+        marginBottom: 10,
+        padding: 10,
+        color: 'grey'
+    },
+    buttonContainer:{
+        backgroundColor: '#fa5555',
+        paddingVertical: 15
+    },
+    buttonText:{
+        color: '#fff',
+        textAlign: 'center',
+        fontWeight: '700'
     }
   });
