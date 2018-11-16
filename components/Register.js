@@ -7,27 +7,29 @@ export default class Register extends Component{
     constructor(){
         super();
         this.state={
-          username: '',
+          name: '',
           email: '',
           password: '',
           repassword: '',
+          dataSource: '',
+          error: ''
         }
       }
 
     register(){
-        const {username} = this.state;
+        const {name} = this.state;
         const {email} = this.state;
         const {password} = this.state;
         const {repassword} = this.state;
 
-        fetch('http://192.168.16.14:8000/api/auth/signup', {
+        fetch('http://192.168.16.14:8000/jwt/register', {
 			method: 'post',
 			header:{
 				'Accept': 'application/json',
 				'Content-type': 'application/json'
 			},
 			body:JSON.stringify({
-                username: username,
+                name: name,
                 email: email,
                 password: password,
                 repassword: repassword
@@ -36,11 +38,25 @@ export default class Register extends Component{
 		})
 		.then((response) => response.json())
 			.then((responseJson) =>{
-			 Alert.alert('Alert',
-                responseJson,
-        [
-          {text: 'OK', onPress: () => console.log('OK Pressed')},
-        ]);
+             
+                this.setState({
+                    dataSource: responseJson,
+                    error : responseJson.error
+                });
+
+                if(!this.state.dataSource.success){
+                    Alert.alert(this.state.dataSource.status,
+                        this.state.error,
+                        [
+                        {text: 'OK', onPress: () => console.log('OK Pressed')},
+                        ]);
+                }else{
+                    Alert.alert(this.state.dataSource.status,
+                        this.state.dataSource.message,
+                        [
+                        {text: 'OK', onPress: () => this.props.navigation.navigate('Login')},
+                        ]);
+                }
 			})
 			.catch((error)=>{
 				console.error(error);
@@ -60,7 +76,7 @@ export default class Register extends Component{
                 <TextInput style = {styles.input} 
                autoCapitalize="none" 
                autoCorrect={false} 
-               onChangeText= {username => this.setState({username})}
+               onChangeText= {name => this.setState({name})}
                returnKeyType="next" 
                placeholder='Username' 
                placeholderTextColor='grey'
