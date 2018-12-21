@@ -24,26 +24,11 @@ import Feed from './Feed';
 import About from './About';
 import Login from './Login';
 import Register from './Register';
+import Search from './Search';
+import Swipe from './swipe';
 
 
 export default class Home extends Component{
-  
-  //Header For main Tab Screen
-  static navigationOptions = {
-    // headerTitle: ( 
-    //   <Image style={{ 
-    //     height: 30,
-    //      width:80, 
-    //      alignSelf: 'center', 
-    //      resizeMode: 'contain',
-    //     paddingLeft: 50}} 
-    //      source={require('../assets/siska.png')} 
-    //      /> 
-    // ),
-    title: 'Tittle'
-    // headerRight:  <Icon name='ios-search' color="grey" size={24} style={{ paddingRight: 20 }}/>,
-    
-  }
   
   render() {
     return (
@@ -96,7 +81,7 @@ export default class Home extends Component{
     },
   },{
     tabBarPosition: 'bottom',
-    swipeEnabled: true,
+    swipeEnabled: false,
     animationEnabled: true,
 
     tabBarOptions:{
@@ -119,6 +104,34 @@ export default class Home extends Component{
           alignSelf: 'center',
           fontWeight:'500',
           paddingLeft: 160,
+          fontSize:20,
+          marginTop:5,
+          
+        },
+      }),
+    },
+    Search:{
+      screen: Search,
+      navigationOptions: () => ({
+        title: 'Search Vacancy',
+        headerTitleStyle:{
+          alignSelf: 'center',
+          fontWeight:'500',
+          paddingLeft: 85,
+          fontSize:20,
+          marginTop:5,
+          
+        },
+      }),
+    },
+    Swipe:{
+      screen:Swipe,
+      navigationOptions: () => ({
+        title: 'Swipe & Apply',
+        headerTitleStyle:{
+          alignSelf: 'center',
+          fontWeight:'500',
+          paddingLeft: 85,
           fontSize:20,
           marginTop:5,
           
