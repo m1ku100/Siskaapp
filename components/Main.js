@@ -1,25 +1,40 @@
 import React, {Component} from 'react';
-import {FlatList, ActivityIndicator, Platform, StyleSheet, Text, View, ScrollView, RefreshControl, TouchableOpacity} from 'react-native';
-import { Container, Content, Icon, Button} from 'native-base';
-import { createBottomTabNavigator } from 'react-navigation';
+import {StyleSheet,
+FlatList,
+TouchableOpacity} from 'react-native';
+import { Container,
+  Header,
+  Button,
+  Icon,
+  Item,
+  Input,
+  Content,
+  Card,
+  CardItem,
+  Body,
+  Tab,
+  Tabs,
+  Text,
+  View} from 'native-base';
 
-//Screen
-import CardComponent from './CardComponent';
+  import CardComponent from './CardComponent';
+
 
 export default class Splash extends Component{
+  
   constructor(props){
     super(props);
     this.state ={ 
       isLoading: true, 
-      refreshing:false
+      refreshing:false,
+      q:''
     }
   }
 
-  _onRefresh = () => {
-    this.setState({refreshing: true});
-    this.componentDidMount().then(() => {
-      this.setState({refreshing: false});
-    });
+  sendSearchKey(){
+    this.props.navigation.navigate('Search',{
+      key : this.state.q
+    })
   }
 
   componentDidMount(){
@@ -39,67 +54,119 @@ export default class Splash extends Component{
         console.error(error);
       });
   }
-    render() {
 
-      if(this.state.isLoading){
-        return(
-          <View style={{flex: 1, padding: 20}}>
-            <ActivityIndicator/>
-          </View>
-        )
-      }
-  
+    render() {
       return (
         <Container style={styles.container}>
-       
-        <ScrollView
-        pagingEnabled={true}
-        refreshControl={
-          <RefreshControl
-            refreshing={this.state.refreshing}
-            onRefresh={this._onRefresh}
-          />
-        }
-        
-      >
-      
-          <TouchableOpacity style={{flex: 1, }}>
-              <FlatList
+        <Header searchBar rounded style={{ backgroundColor:'#fa5555' }}
+          androidStatusBarColor="#fa6666" >
+          <Item>
+            <Icon active name="search"  />
+            <Input 
+            onChangeText={q => this.setState({q})}
+            returnKeyType="go"
+            onSubmitEditing={() => this.sendSearchKey()}
+            placeholder="Job tittle" />
+          </Item>
+        </Header>
+
+        <Tabs locked>
+          <Tab 
+          tabStyle={{backgroundColor: '#fa5555',paddingEnd:-30}}
+          textStyle={{color: '#fff'}} 
+          activeTabStyle={{backgroundColor: '#fa5555'}}
+          activeTextStyle={{color: '#fff', fontWeight: 'normal'}}
+          heading="Popular Vacancy">
+          <Card style={styles.mb} >
+            <CardItem>
+              <Body>
+                <FlatList
+                horizontal={true}
                 data={this.state.dataSource}
                 renderItem={({item}) => 
-                  <TouchableOpacity onPress={() => this.props.navigation.navigate('Detail',{
-                    id: item.id,
-                    judul: item.judul,
-                    company: item.user.name,
-                    img: item.user.ava,
-                    salary: item.salary,
-                    location: item.city,
-                    update: item.updated_at,
-                    syarat: item.syarat
-                  })}>
                     <CardComponent company={item.user.name} jobtitle={item.judul} salary={item.salary} location={item.city} img={item.user.ava} />
-                  </TouchableOpacity>
                 } 
                 keyExtractor={({id}) => id.toString()}
-                onEndReached={this.handleLoadMore}
-              />
-          </TouchableOpacity>
+                />
+              </Body>
+            </CardItem>
+          </Card>
+          </Tab>
+
+          <Tab 
+          tabStyle={{backgroundColor: '#fa5555'}}
+          textStyle={{color: '#fff'}} 
+          activeTabStyle={{backgroundColor: '#fa5555'}}
+          activeTextStyle={{color: '#fff', fontWeight: 'normal'}}
+          heading="Latest Vacancy">
+          <Card style={styles.mb}>
+            <CardItem>
+              <Body>
+                <FlatList
+                horizontal={true}
+                data={this.state.dataSource}
+                renderItem={({item}) => 
+                    <CardComponent company={item.user.name} jobtitle={item.judul} salary={item.salary} location={item.city} img={item.user.ava} />
+                } 
+                keyExtractor={({id}) => id.toString()}
+                />
+              </Body>
+            </CardItem>
+          </Card>
+          </Tab>
+        </Tabs>
+
+
+        <Content padder style={{ paddingTop:-50 }}>
         
-        </ScrollView>
-       
-        </Container>
+        <TouchableOpacity onPress={() => this.props.navigation.navigate('Swipe')}>
+          <Card>
+              <CardItem style={styles.cardcolor}>
+                <Body>
+                  <View style={{ flexDirection:'row',alignSelf: 'center' }}>
+                  <Icon active name="images" style={{ color:'white' }}/>
+                  <Text style={{ color:'white', fontWeight: '400' }}>  Swipe & Apply</Text>
+                  </View>
+                </Body>
+              </CardItem>
+          </Card>
+        </TouchableOpacity>
+
+          <Card style={styles.mb}>
+            <CardItem header>
+              <Text style={styles.text}>Most Favorite Agency</Text>
+            </CardItem>
+            <CardItem>
+              <Body>
+                <FlatList
+                horizontal={true}
+                data={this.state.dataSource}
+                renderItem={({item}) => 
+                    <CardComponent company={item.user.name} jobtitle={item.judul} salary={item.salary} location={item.city} img={item.user.ava} />
+                } 
+                keyExtractor={({id}) => id.toString()}
+                />
+              </Body>
+            </CardItem>
+          </Card>
+        </Content>
+      </Container>
       );
     }
 }
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'white',
+    backgroundColor: '#FFF',
   },
   text: {
-    fontWeight: 'bold',
-    fontSize: 18,
+    fontWeight: '300',
+    fontSize: 16,
     textAlign: 'center',
     color: 'black',
   },
+  cardcolor:{
+    backgroundColor: '#fa5555',
+  }
+ 
 });  
