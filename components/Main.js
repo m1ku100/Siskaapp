@@ -15,9 +15,11 @@ import { Container,
   Tab,
   Tabs,
   Text,
-  View} from 'native-base';
+  View,
+  Spinner} from 'native-base';
 
   import CardComponent from './CardComponent';
+  import CardAgency from './Partial/CardAgency';
 
 
 export default class Splash extends Component{
@@ -37,25 +39,44 @@ export default class Splash extends Component{
     })
   }
 
-  componentDidMount(){
-    return fetch('http://192.168.16.14:8000/api/clients/vacancies')
-      .then((response) => response.json())
-      .then((responseJson) => {
-       
-        this.setState({
-          isLoading: false,
-          dataSource: responseJson
-        }, function(){
+  fetchdata(){
+    var popular = 'http://192.168.16.14:8000/api/clients/vacancies/favorite';
+    var latest = 'http://192.168.16.14:8000/api/clients/vacancies/latest';
+    var agency = 'http://192.168.16.14:8000/api/clients/favorite/agency';
 
-        });
-
+    fetch(popular).then((response) => response.json())
+    .then((responseJson) => {
+      this.setState({
+        popularvacancy : responseJson
       })
-      .catch((error) =>{
-        console.error(error);
-      });
+    }).then(() => {
+      fetch(latest).then((responselate) => responselate.json())
+      .then((responselate) => {
+        this.setState({
+          latestvacancy : responselate,
+          
+        })
+      })
+    }).then(()=> {
+      fetch(agency).then((responagency) => responagency.json())
+      .then((responagency) => {
+        this.setState({ 
+          agency_data: responagency, 
+          isLoading: false
+        })
+      }) 
+    }).catch((error) => {
+      console.error(error)
+    })
+
+  }
+
+  componentDidMount(){
+    return this.fetchdata();
   }
 
     render() {
+      const isLoading = this.state.isLoading;
       return (
         <Container style={styles.container}>
         <Header searchBar rounded style={{ backgroundColor:'#fa5555' }}
@@ -79,16 +100,18 @@ export default class Splash extends Component{
           heading="Popular Vacancy">
           <Card style={styles.mb} >
             <CardItem>
+              { isLoading ? <Spinner color="red"/> : 
               <Body>
-                <FlatList
-                horizontal={true}
-                data={this.state.dataSource}
-                renderItem={({item}) => 
-                    <CardComponent company={item.user.name} jobtitle={item.judul} salary={item.salary} location={item.city} img={item.user.ava} />
-                } 
-                keyExtractor={({id}) => id.toString()}
-                />
-              </Body>
+              <FlatList
+              horizontal={true}
+              data={this.state.popularvacancy}
+              renderItem={({item}) => 
+                  <CardComponent company={item.user.name} jobtitle={item.judul} salary={item.salary} location={item.city} img={item.user.ava} />
+              } 
+              keyExtractor={({id}) => id.toString()}
+              />
+            </Body>
+              }
             </CardItem>
           </Card>
           </Tab>
@@ -102,14 +125,15 @@ export default class Splash extends Component{
           <Card style={styles.mb}>
             <CardItem>
               <Body>
-                <FlatList
+                {isLoading ? <Spinner  color="red"/> : <FlatList
                 horizontal={true}
-                data={this.state.dataSource}
+                data={this.state.latestvacancy}
                 renderItem={({item}) => 
                     <CardComponent company={item.user.name} jobtitle={item.judul} salary={item.salary} location={item.city} img={item.user.ava} />
                 } 
                 keyExtractor={({id}) => id.toString()}
-                />
+                />}
+                
               </Body>
             </CardItem>
           </Card>
@@ -138,14 +162,15 @@ export default class Splash extends Component{
             </CardItem>
             <CardItem>
               <Body>
-                <FlatList
+                {isLoading ? <Spinner color="red"/> : <FlatList
                 horizontal={true}
-                data={this.state.dataSource}
+                data={this.state.agency_data}
                 renderItem={({item}) => 
-                    <CardComponent company={item.user.name} jobtitle={item.judul} salary={item.salary} location={item.city} img={item.user.ava} />
+                    <CardAgency company={item.user.name}  img={item.user.ava} />
                 } 
                 keyExtractor={({id}) => id.toString()}
-                />
+                /> }
+                
               </Body>
             </CardItem>
           </Card>
