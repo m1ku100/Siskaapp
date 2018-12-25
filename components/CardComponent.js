@@ -22,9 +22,6 @@ export default class cardComponent extends Component{
                         </View>
                     </Body>
                 </Left>
-                <Right>
-                    <Icon name='ios-bookmark' size={50} color='grey'/>
-                </Right>
             </CardItem>
         </Card>
       );
