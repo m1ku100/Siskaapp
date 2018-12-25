@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {FlatList, ActivityIndicator, Platform, StyleSheet, ScrollView, RefreshControl, TouchableOpacity, Modal} from 'react-native';
+import {FlatList, ActivityIndicator, Platform, StyleSheet, ScrollView, RefreshControl, TouchableOpacity, Modal, Alert} from 'react-native';
 import { Container,
 	Header,
 	Button,
@@ -17,7 +17,9 @@ import { Container,
 	Fab,
 	Right,
 	Left,
-	Spinner
+	Spinner,
+	Form,
+	Picker
 } from 'native-base';
 import { createBottomTabNavigator } from 'react-navigation';
 
@@ -43,25 +45,33 @@ export default class Search extends Component{
 			degree_ids:'',
 			major_ids:'',
 			modalVisible: false,
+			currencies: [
+			{ "country": "UK", "currency":"GBP", "currencyLabel":  "Pound" },
+			{ "country": "EU", "currency":"EUR", "currencyLabel": "Euro" },
+			{ "country": "USA", "currency":"USD", "currencyLabel": "USD Dollar" }
+			],
+            
 		}
 	}
 	
-	_onRefresh = () => {
-		this.setState({refreshing: true});
-		this.componentDidMount().then(() => {
-			this.setState({refreshing: false});
+	onValueChange(value) {
+		this.setState({
+		  loc: value
 		});
-	}
+	  }
 	
 	setModalVisible(visible) {
 		this.setState({modalVisible: visible});
 	  }
 
-	searchFecth(){
-		const { navigation } = this.props;
-		const key = navigation.getParam('key', '');
-		
-		
+
+	search(){
+		this.setState({
+			isLoading:true,
+			dataSource: null
+		});
+
+		const {key} = this.state;
 		const {agen} = this.state;
 		const {loc} = this.state;
 		const {salary_ids} = this.state;
@@ -69,7 +79,7 @@ export default class Search extends Component{
 		const {industry_ids} = this.state;
 		const {degree_ids} = this.state;
 		const {major_ids} = this.state;
-		
+
 		fetch('http://192.168.16.14:8000/api/search', {
 		method: 'post',
 		header:{
@@ -99,23 +109,116 @@ export default class Search extends Component{
 	.catch((error)=>{
 		console.error(error);
 	});
+	}
+
+	/**
+	 * for 1st search 
+	 * 
+	 */  
+	searchFecth(){
+		
+		const { navigation } = this.props;
+		const q = navigation.getParam('key', '');
+		
+		const {key} = this.state;
+		const {agen} = this.state;
+		const {loc} = this.state;
+		const {salary_ids} = this.state;
+		const {jobfunc_ids} = this.state;
+		const {industry_ids} = this.state;
+		const {degree_ids} = this.state;
+		const {major_ids} = this.state;
+
+		fetch('http://192.168.16.14:8000/api/search', {
+		method: 'post',
+		header:{
+			'Accept': 'application/json',
+			'Content-type': 'application/json'
+		},
+		body:JSON.stringify({
+			q: q,
+			agen:agen,
+			loc:loc,
+			salary_ids:salary_ids,
+			jobfunc_ids:jobfunc_ids,
+			industry_ids:industry_ids,
+			degree_ids:degree_ids,
+			major_ids:major_ids,
+		})
+		
+	})
+	.then((response) => response.json())
+	.then((responseJson) =>{
+		
+		this.setState({
+			isLoading: false,
+			dataSource: responseJson,
+		});
+	})
+	.catch((error)=>{
+		console.error(error);
+	});
+}
+
+fecthComponent(){
+	var cities = 'http://192.168.16.14:8000/api/clients/cities';
+	var job_func = 'http://192.168.16.14:8000/api/clients/jobfunction';
+	var industries = 'http://192.168.16.14:8000/api/clients/industries';
+	var degree_id = 'http://192.168.16.14:8000/api/clients/degree';
+
+	fetch(cities).then((response) => response.json())
+    .then((responseJson) => {
+      this.setState({
+        currencies : responseJson
+			})
+			console.log(responseJson);
+    }).then(() => {
+      fetch(job_func).then((responsejob_func) => responsejob_func.json())
+      .then((responsejob_func) => {
+        this.setState({
+          job_func_data : responsejob_func,
+        })
+      })
+    }).then(() => {
+		fetch(industries).then((responseindustries) => responseindustries.json())
+      	.then((responseindustries) => {
+        this.setState({
+			industries_data : responseindustries,
+        })
+      })
+	}).then(() => {
+		fetch(degree_id).then((responsedegree_id) => responsedegree_id.json())
+      .then((responsedegree_id) => {
+        this.setState({
+			degree_id : responsedegree_id,
+        })
+      })
+	}).then(() => {
+		fetch('https://s3.amazonaws.com/cbu-rec-center-app/credentials/schedule.json').then((json) => json.json())
+      .then((json) => {
+        this.setState({
+			res : json,
+        })
+      })
+	}).catch((error) => {
+      console.error(error)
+    })
+
 }
 
 componentDidMount(){
-	
-	return this.searchFecth()
+	const { navigation } = this.props;
+	const q = navigation.getParam('key', '');
+	this.setState({
+		key: q
+	});
+	this.fecthComponent();
+	this.searchFecth();
 	
 }
 render() {
+    const isLoading = this.state.isLoading;
 	
-	if(this.state.isLoading){
-		return(
-			<View style={{flex: 1, padding: 20}}>
-				 <Spinner color="red" />
-			</View>
-			)
-		}
-		
 		return (			
 			<Container style={styles.container}>
 			<Header searchBar rounded style={{ backgroundColor:'#fa5555' }}
@@ -125,14 +228,16 @@ render() {
 					<Icon name="arrow-back" />
 				</Button>
 					<Input 
-					onChangeText={q => this.setState({q})}
+					defaultValue={this.state.key}
+					onChangeText={key => this.setState({key})}
 					returnKeyType="go"
-					onSubmitEditing={() => this.sendSearchKey()}
+					onSubmitEditing={() => this.search()}
 					placeholder="Job tittle" />
 				</Item>
 			</Header>
 
 			<Content >
+				{isLoading ? <Spinner  color="red"/> :
 			<ScrollView
 			pagingEnabled={true}
 			refreshControl={
@@ -154,8 +259,9 @@ render() {
 			onEndReached={this.handleLoadMore}
 			/>
 		
-		</ScrollView>
-		</Content>
+		</ScrollView>}
+			</Content>
+
 		<View >
 			<Fab
 				active={false}
@@ -181,16 +287,16 @@ render() {
           }}>
           <View>
 
+			{/*Modal Content start Here */}
+
 		  <Header rounded style={{ backgroundColor:'#fa5555' }}
 			androidStatusBarColor="#fa6666" >
 			<Left>
-					<Button 
+				<Button 
 					transparent 
 					style={{ backgroundColor:'#fa5555' }}
 					onPress={() => {
-                  this.setModalVisible(!this.state.modalVisible);
-                }}>
-					
+                  	this.setModalVisible(!this.state.modalVisible);}}>
 					<Icon name="close" style={{ color:'white', fontSize:24}}/>
 				</Button>
 			</Left>
@@ -199,16 +305,66 @@ render() {
 				</Body>
 				
 		  </Header>
+			
+		  <View padder>
+          <Form>
+          <Text>{typeof pickerValues}</Text>
+            <Item regular>
+						<Input 
+						defaultValue={this.state.key}
+						placeholder="Job Title" />
+            </Item>
+		
+						<Text>Location</Text>
+            <Item >
+						<Picker
+              note
+              mode="dropdown"
+              style={{ width: 120 }}
+              selectedValue={this.state.loc}
+              onValueChange={loc => this.setState({loc})}
+            >
+						 {this.state.currencies.map( (v)=>{
+   							return <Picker.Item label={v.name} value={v.currency} />
+ 						 }) }
+            </Picker>
+            </Item>
 
-            <View>
-              <Text>Hello World!</Text>
-              <Button
-                onPress={() => {
-                  this.setModalVisible(!this.state.modalVisible);
-                }}>
-                <Text>Hide Modal</Text>
-              </Button>
-            </View>
+			<Text>{this.state.loc}</Text>
+            <Item regular>
+			<Picker
+              note
+              mode="dropdown"
+              style={{ width: 120 }}
+              selectedValue={this.state.selected}
+              onValueChange={this.onValueChange.bind(this)}
+            >
+              <Picker.Item label="Wallet" value="key0" />
+              <Picker.Item label="ATM Card" value="key1" />
+              <Picker.Item label="Debit Card" value="key2" />
+              <Picker.Item label="Credit Card" value="key3" />
+              <Picker.Item label="Net Banking" value="key4" />
+            </Picker>
+            </Item>
+
+			<Text>Indutry</Text>
+            <Item regular>
+			<Picker
+              note
+              mode="dropdown"
+              style={{ width: 120 }}
+              selectedValue={this.state.selected}
+              onValueChange={this.onValueChange.bind(this)}
+            >
+              <Picker.Item label="Wallet" value="key0" />
+              <Picker.Item label="ATM Card" value="key1" />
+              <Picker.Item label="Debit Card" value="key2" />
+              <Picker.Item label="Credit Card" value="key3" />
+              <Picker.Item label="Net Banking" value="key4" />
+            </Picker>
+            </Item>
+          </Form>
+        </View>
 
 
           </View>
