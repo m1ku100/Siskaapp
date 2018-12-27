@@ -19,7 +19,9 @@ import { Container,
 	Left,
 	Spinner,
 	Form,
-	Picker
+	Picker,
+	CheckBox,
+	ListItem
 } from 'native-base';
 import { createBottomTabNavigator } from 'react-navigation';
 
@@ -44,12 +46,11 @@ export default class Search extends Component{
 			industry_ids:'',
 			degree_ids:'',
 			major_ids:'',
+			checked: false,
 			modalVisible: false,
-			currencies: [
-			{ "country": "UK", "currency":"GBP", "currencyLabel":  "Pound" },
-			{ "country": "EU", "currency":"EUR", "currencyLabel": "Euro" },
-			{ "country": "USA", "currency":"USD", "currencyLabel": "USD Dollar" }
-			],
+			secondmodal: false,
+			currencies: [],
+			industries_data:[]
             
 		}
 	}
@@ -58,15 +59,30 @@ export default class Search extends Component{
 		this.setState({
 		  loc: value
 		});
-	  }
-	
-	setModalVisible(visible) {
-		this.setState({modalVisible: visible});
-	  }
+	}
 
+	setModalVisible(visible) {
+		this.setState({
+			modalVisible: visible,
+		});
+	}
+
+	setIndustry(value){
+		if(this.state.industry_ids == ''){
+			this.setState({
+				industry_ids:  value,
+			})
+		}else(
+			this.setState({
+				industry_ids: this.state.industry_ids+','+ value,
+			})
+		)
+		
+	}
 
 	search(){
 		this.setState({
+			modalVisible: false,
 			isLoading:true,
 			dataSource: null
 		});
@@ -279,8 +295,8 @@ render() {
 
 		<View style={{marginTop: 22}}>
         <Modal
-          animationType="fade"
-		  transparent={false}
+          animationType="slide"
+		  	  transparent={false}
           visible={this.state.modalVisible}
           onRequestClose={() => {
             Alert.alert('Modal has been closed.');
@@ -305,13 +321,61 @@ render() {
 				</Body>
 				
 		  </Header>
-			
+						
+						<Modal
+						visible={this.state.secondmodal}
+						onRequestClose={() => {
+							Alert.alert('Modal has been closed.');
+						}}>
+							<Header rounded style={{ backgroundColor:'#fa5555' }}
+							androidStatusBarColor="#fa6666" >
+							<Left>
+								<Button 
+									transparent 
+									style={{ backgroundColor:'#fa5555' }}
+									onPress={() => {
+														this.setState({secondmodal:false})
+														}}>
+									<Icon name="arrow-back" style={{ color:'white', fontSize:24}}/>
+								</Button>
+							</Left>
+							<Body >
+								<Text style={{ color:'white',fontSize:18 }}>industry</Text>
+							</Body>
+							</Header>
+
+							<View padder>
+							<Text>{this.state.industry_ids}</Text>
+						<ScrollView>
+
+									{this.state.industries_data.map((v,index)=>{
+											
+											return ( 
+											<ListItem button >
+											<CheckBox
+											color="red"
+											checked={this.state.checked}
+											key={v.id}
+											onPress={()=>this.setIndustry(v.id)}
+											/>
+											<Body>
+												<Text>{v.nama}</Text>
+											</Body>
+										</ListItem>)
+									})}
+
+									</ScrollView>
+							</View>
+						</Modal>
+
+
 		  <View padder>
           <Form>
-          <Text>{typeof pickerValues}</Text>
+          	<Text>Job Title</Text>
             <Item regular>
 						<Input 
 						defaultValue={this.state.key}
+						onChangeText={key => this.setState({key})}
 						placeholder="Job Title" />
             </Item>
 		
@@ -324,32 +388,26 @@ render() {
               selectedValue={this.state.loc}
               onValueChange={loc => this.setState({loc})}
             >
-						 {this.state.currencies.map( (v)=>{
-   							return <Picker.Item label={v.name} value={v.currency} />
+						<Picker.Item label="-- Choose Location --" value="" />
+						 {this.state.currencies.map( (v,index)=>{
+   							return <Picker.Item label={v.name} value={v.id} key={index}/>
  						 }) }
             </Picker>
             </Item>
 
-			<Text>{this.state.loc}</Text>
-            <Item regular>
-			<Picker
-              note
-              mode="dropdown"
-              style={{ width: 120 }}
-              selectedValue={this.state.selected}
-              onValueChange={this.onValueChange.bind(this)}
-            >
-              <Picker.Item label="Wallet" value="key0" />
-              <Picker.Item label="ATM Card" value="key1" />
-              <Picker.Item label="Debit Card" value="key2" />
-              <Picker.Item label="Credit Card" value="key3" />
-              <Picker.Item label="Net Banking" value="key4" />
-            </Picker>
+					<Text>Industry</Text>
+					
+						<Item regular>
+								<Input 
+								onFocus={()=> this.setState({secondmodal:true})}
+								placeholder="Industry"
+								defaultValue={this.state.industry_ids}
+								/>
             </Item>
-
-			<Text>Indutry</Text>
-            <Item regular>
-			<Picker
+						
+					<Text>Indutry</Text>
+								<Item regular>
+					<Picker
               note
               mode="dropdown"
               style={{ width: 120 }}
@@ -366,7 +424,15 @@ render() {
           </Form>
         </View>
 
-
+						<View style={{ flexDirection:'row',alignSelf: 'center' }}>
+						<Button rounded
+						onPress={() => {
+							this.search();
+							}}
+						style={{ backgroundColor:'#fa5555',  }}>
+            <Text>Search</Text>
+         		 </Button>
+						</View>
           </View>
         </Modal>
       </View>
