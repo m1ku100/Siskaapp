@@ -80,6 +80,17 @@ export default class Search extends Component{
 		
 	}
 
+	removeIndustry(value){
+		var industry = JSON.parse("[" + this.state.industry_ids + "]")
+		var array = industry.indexOf(value)
+		if(array > -1){
+			industry.splice(array,1)
+		}
+		this.setState({
+			industry_ids: industry.toString()
+		})
+	}
+
 	search(){
 		this.setState({
 			modalVisible: false,
@@ -234,7 +245,8 @@ componentDidMount(){
 }
 render() {
     const isLoading = this.state.isLoading;
-	
+	var industry = JSON.parse("[" + this.state.industry_ids + "]");
+
 		return (			
 			<Container style={styles.container}>
 			<Header searchBar rounded style={{ backgroundColor:'#fa5555' }}
@@ -334,8 +346,8 @@ render() {
 									transparent 
 									style={{ backgroundColor:'#fa5555' }}
 									onPress={() => {
-														this.setState({secondmodal:false})
-														}}>
+									this.setState({secondmodal:false})
+									}}>
 									<Icon name="arrow-back" style={{ color:'white', fontSize:24}}/>
 								</Button>
 							</Left>
@@ -345,24 +357,38 @@ render() {
 							</Header>
 
 							<View padder>
-							<Text>{this.state.industry_ids}</Text>
+							<Text>{this.state.industry_ids} - {typeof industry}</Text>
 						<ScrollView>
 
-									{this.state.industries_data.map((v,index)=>{
-											
-											return ( 
-											<ListItem button >
-											<CheckBox
-											color="red"
-											checked={this.state.checked}
-											key={v.id}
-											onPress={()=>this.setIndustry(v.id)}
-											/>
-											<Body>
-												<Text>{v.nama}</Text>
-											</Body>
-										</ListItem>)
-									})}
+							{this.state.industries_data.map((v,index)=>{
+								if(industry.indexOf(v.id)== -1){
+									return ( 
+										<ListItem button >
+										<CheckBox
+										color="red"
+										checked={false}
+										key={v.id}
+										onPress={()=>this.setIndustry(v.id)}
+										/>
+										<Body>
+											<Text key={index}>{v.nama}</Text>
+										</Body>
+									</ListItem>)
+								}if(industry.indexOf(v.id)!= -1){
+									return ( 
+										<ListItem button >
+										<CheckBox
+										color="red"
+										checked={true}
+										key={v.id}
+										onPress={()=>this.removeIndustry(v.id)}
+										/>
+										<Body>
+											<Text key={index}>{v.nama}</Text>
+										</Body>
+									</ListItem>)
+								}	
+							})}
 
 									</ScrollView>
 							</View>
