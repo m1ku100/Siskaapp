@@ -50,7 +50,8 @@ export default class Search extends Component{
 			modalVisible: false,
 			secondmodal: false,
 			currencies: [],
-			industries_data:[]
+			industries_data:[],
+			degree:[]
             
 		}
 	}
@@ -187,62 +188,62 @@ export default class Search extends Component{
 	});
 }
 
-fecthComponent(){
-	var cities = 'http://192.168.16.14:8000/api/clients/cities';
-	var job_func = 'http://192.168.16.14:8000/api/clients/jobfunction';
-	var industries = 'http://192.168.16.14:8000/api/clients/industries';
-	var degree_id = 'http://192.168.16.14:8000/api/clients/degree';
+	fecthComponent(){
+		var cities = 'http://192.168.16.14:8000/api/clients/cities';
+		var job_func = 'http://192.168.16.14:8000/api/clients/jobfunction';
+		var industries = 'http://192.168.16.14:8000/api/clients/industries';
+		var degree_id = 'http://192.168.16.14:8000/api/clients/degree';
 
-	fetch(cities).then((response) => response.json())
-    .then((responseJson) => {
-      this.setState({
-        currencies : responseJson
+		fetch(cities).then((response) => response.json())
+		.then((responseJson) => {
+		this.setState({
+			currencies : responseJson
+				})
+				console.log(responseJson);
+		}).then(() => {
+		fetch(job_func).then((responsejob_func) => responsejob_func.json())
+		.then((responsejob_func) => {
+			this.setState({
+			job_func_data : responsejob_func,
 			})
-			console.log(responseJson);
-    }).then(() => {
-      fetch(job_func).then((responsejob_func) => responsejob_func.json())
-      .then((responsejob_func) => {
-        this.setState({
-          job_func_data : responsejob_func,
-        })
-      })
-    }).then(() => {
-		fetch(industries).then((responseindustries) => responseindustries.json())
-      	.then((responseindustries) => {
-        this.setState({
-			industries_data : responseindustries,
-        })
-      })
-	}).then(() => {
-		fetch(degree_id).then((responsedegree_id) => responsedegree_id.json())
-      .then((responsedegree_id) => {
-        this.setState({
-			degree_id : responsedegree_id,
-        })
-      })
-	}).then(() => {
-		fetch('https://s3.amazonaws.com/cbu-rec-center-app/credentials/schedule.json').then((json) => json.json())
-      .then((json) => {
-        this.setState({
-			res : json,
-        })
-      })
-	}).catch((error) => {
-      console.error(error)
-    })
+		})
+		}).then(() => {
+			fetch(industries).then((responseindustries) => responseindustries.json())
+			.then((responseindustries) => {
+			this.setState({
+				industries_data : responseindustries,
+			})
+		})
+		}).then(() => {
+			fetch(degree_id).then((responsedegree_id) => responsedegree_id.json())
+		.then((responsedegree_id) => {
+			this.setState({
+				degree : responsedegree_id,
+			})
+		})
+		}).then(() => {
+			fetch('https://s3.amazonaws.com/cbu-rec-center-app/credentials/schedule.json').then((json) => json.json())
+		.then((json) => {
+			this.setState({
+				res : json,
+			})
+		})
+		}).catch((error) => {
+		console.error(error)
+		})
 
-}
+	}
 
-componentDidMount(){
-	const { navigation } = this.props;
-	const q = navigation.getParam('key', '');
-	this.setState({
-		key: q
-	});
-	this.fecthComponent();
-	this.searchFecth();
-	
-}
+	componentDidMount(){
+		const { navigation } = this.props;
+		const q = navigation.getParam('key', '');
+		this.setState({
+			key: q
+		});
+		this.fecthComponent();
+		this.searchFecth();
+		
+	}
 render() {
     const isLoading = this.state.isLoading;
 	var industry = JSON.parse("[" + this.state.industry_ids + "]");
@@ -328,13 +329,14 @@ render() {
 					<Icon name="close" style={{ color:'white', fontSize:24}}/>
 				</Button>
 			</Left>
-			  	<Body >
+			  	<Body style={{ alignSelf: 'center' }} >
 					<Text style={{ color:'white',fontSize:18 }}>Filter</Text>
 				</Body>
 				
 		  </Header>
 						
 						<Modal
+						animationType='slide'
 						visible={this.state.secondmodal}
 						onRequestClose={() => {
 							Alert.alert('Modal has been closed.');
@@ -363,7 +365,7 @@ render() {
 							{this.state.industries_data.map((v,index)=>{
 								if(industry.indexOf(v.id)== -1){
 									return ( 
-										<ListItem button >
+										<ListItem button key={index} >
 										<CheckBox
 										color="red"
 										checked={false}
@@ -376,7 +378,7 @@ render() {
 									</ListItem>)
 								}if(industry.indexOf(v.id)!= -1){
 									return ( 
-										<ListItem button >
+										<ListItem button key={index} >
 										<CheckBox
 										color="red"
 										checked={true}
@@ -390,7 +392,7 @@ render() {
 								}	
 							})}
 
-									</ScrollView>
+								</ScrollView>
 							</View>
 						</Modal>
 
@@ -399,66 +401,64 @@ render() {
           <Form>
           	<Text>Job Title</Text>
             <Item regular>
-						<Input 
-						defaultValue={this.state.key}
-						onChangeText={key => this.setState({key})}
-						placeholder="Job Title" />
+				<Input 
+				defaultValue={this.state.key}
+				onChangeText={key => this.setState({key})}
+				placeholder="Job Title" />
             </Item>
 		
-						<Text>Location</Text>
-            <Item >
-						<Picker
+				<Text>Location</Text>
+            <Item regular>
+				<Picker
               note
-              mode="dropdown"
-              style={{ width: 120 }}
+              mode="dialog"
+              
               selectedValue={this.state.loc}
               onValueChange={loc => this.setState({loc})}
             >
-						<Picker.Item label="-- Choose Location --" value="" />
-						 {this.state.currencies.map( (v,index)=>{
-   							return <Picker.Item label={v.name} value={v.id} key={index}/>
- 						 }) }
+				<Picker.Item label="-- Choose Location --" value="" />
+				 {this.state.currencies.map( (v,index)=>{
+   					return <Picker.Item label={v.name} value={v.id} key={index}/>
+ 				 }) }
             </Picker>
             </Item>
 
-					<Text>Industry</Text>
-					
-						<Item regular>
-								<Input 
-								onFocus={()=> this.setState({secondmodal:true})}
-								placeholder="Industry"
-								defaultValue={this.state.industry_ids}
-								/>
+			<Text>Industry</Text>
+				<Item regular>
+				<Input 
+				onFocus={()=> this.setState({secondmodal:true})}
+				placeholder="Industry"
+				defaultValue={null}
+				/>
             </Item>
 						
-					<Text>Indutry</Text>
-								<Item regular>
-					<Picker
+			<Text>Degree</Text>
+				<Item regular>
+			<Picker
               note
-              mode="dropdown"
-              style={{ width: 120 }}
-              selectedValue={this.state.selected}
-              onValueChange={this.onValueChange.bind(this)}
+              mode="dialog"
+              
+              selectedValue={this.state.degree_ids}
+              onValueChange={degree_ids => this.setState({degree_ids})}
             >
-              <Picker.Item label="Wallet" value="key0" />
-              <Picker.Item label="ATM Card" value="key1" />
-              <Picker.Item label="Debit Card" value="key2" />
-              <Picker.Item label="Credit Card" value="key3" />
-              <Picker.Item label="Net Banking" value="key4" />
+			 <Picker.Item label="-- Choose Location --" value="" />
+             { this.state.degree.map((v,index)=>{
+				 return (<Picker.Item label={v.name} value={v.id} key={index} />)
+			 })}
             </Picker>
             </Item>
           </Form>
         </View>
 
-						<View style={{ flexDirection:'row',alignSelf: 'center' }}>
-						<Button rounded
-						onPress={() => {
-							this.search();
-							}}
-						style={{ backgroundColor:'#fa5555',  }}>
+			<View style={{ flexDirection:'row',alignSelf: 'center' }}>
+			<Button rounded
+			onPress={() => {
+				this.search();
+				}}
+			style={{ backgroundColor:'#fa5555',  }}>
             <Text>Search</Text>
          		 </Button>
-						</View>
+			</View>
           </View>
         </Modal>
       </View>
