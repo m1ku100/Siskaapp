@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {FlatList, ActivityIndicator, Platform, StyleSheet, ScrollView, RefreshControl, TouchableOpacity, Modal, Alert} from 'react-native';
+import {FlatList, ActivityIndicator, Platform, StyleSheet, ScrollView, RefreshControl, TouchableOpacity, Modal, Alert, AsyncStorage} from 'react-native';
 import { Container,
 	Header,
 	Button,
@@ -53,7 +53,17 @@ export default class Search extends Component{
 			industries_data:[],
 			degree:[]
             
-		}
+		};
+		AsyncStorage.getItem('user', (error, result) => {
+			if (result) {
+				let resultParsed = JSON.parse(result)
+				this.setState({
+					token: resultParsed.access_token,
+					isLoggedin: resultParsed.isLoggedin
+				});
+			}
+		});
+
 	}
 	
 	onValueChange(value) {
@@ -274,7 +284,7 @@ render() {
 				refreshing={this.state.refreshing}
 				onRefresh={this._onRefresh}
 				/>}>
-
+<Text>{this.state.token }</Text>
 			<FlatList
 			data={this.state.dataSource}
 			renderItem={({item}) => 

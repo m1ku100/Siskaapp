@@ -1,139 +1,162 @@
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View,  TouchableOpacity} from 'react-native';
-import { Icon, Container, Content, Right, Left, Body, Button} from 'native-base';
+import {Platform, StyleSheet, Text, View,  TouchableOpacity, AsyncStorage,Alert} from 'react-native';
+import { Container,
+  Header,
+  Title,
+  Content,
+  Button,
+  Icon,
+  ListItem,
+  Badge,
+  Left,
+  Right,
+  Body,
+  Switch,
+  Radio,
+  Picker,
+  Separator} from 'native-base';
 import { Avatar } from 'react-native-elements';
-
-import Splash from './Splash';
 
 export default class Profile extends Component{
 
-  constructor(){
-    super();
+  constructor(props){
+    super(props);
     this.state={
-      loginstate : false
+      isLoggedin:  false,
+      refreshing: false
+    };
+    
+    AsyncStorage.getItem('user', (error, result) => {
+      if (result) {
+          let resultParsed = JSON.parse(result)
+          this.setState({
+              token: resultParsed.access_token,
+              isLoggedin: resultParsed.isLoggedin
+          });
+      }
+  });
+  }
+
+forceUpdate = () =>{
+  AsyncStorage.getItem('user', (error, result) => {
+    if (result) {
+        let resultParsed = JSON.parse(result)
+        this.setState({
+            token: resultParsed.access_token,
+            isLoggedin: resultParsed.isLoggedin
+        });
     }
+});
+}
+  navigateTo(route){
+  }
+
+  async loggout(){
+    if(this.state.isLoggedin){
+      try {
+        await AsyncStorage.removeItem('user').then(alert('Youre Successfully Logged Out!!'))
+      } catch (err) {
+        alert(`The error is: ${err}`)
+      }
+    }else{
+      Alert.alert('Warning!!',
+      'Please Login to use this feature',
+      [
+        {text: 'Cancel', onPress: () => console.log('Cancel Pressed')},
+        {text: 'Login', onPress: () => this.props.navigation.navigate('Login')},
+      ])
+    }
+
+  }
+
+  componentDidMount(){
+    this.forceUpdate()
   }
 
     render() {
-      
-      if(!this.state.loginstate)
-      {
-        return(
-          <Container style={styles.nonactive}>
-          <Content>
-            
-            <View style={{ paddingTop:10, paddingBottom: 15, backgroundColor:'#FFEEEE' }} >
-                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center',  }}>
-                <TouchableOpacity style={styles.button}
-                onPress={() => this.props.navigation.navigate('Register')}
-                >
-                  <Text style={styles.buttontext}>Sign Up</Text>
-                </TouchableOpacity>
-                
-                <View style={{ flexDirection: 'row', paddingTop:5}}>
-                <Text style={{ fontSize:12 }}>Already have an account?  </Text>
-                <TouchableOpacity onPress={() => this.props.navigation.navigate('Login')}>
-                  <Text style={{ color:'#fa5555',fontSize:12 }}>
-                    Sign in 
-                  </Text>
-                </TouchableOpacity>
-                </View>
-                </View>
-            </View>
-            
-            <View pointerEvents="none" style={{ backgroundColor: '#F3F3F3', opacity:0.4 }}>
-              <View style={{ justifyContent: 'space-around', borderTopWidth: 1, borderTopColor: '#eae5e5', paddingRight:15, paddingLeft:15, paddingBottom: 15}}>
-              <TouchableOpacity>
-              <View style={{ paddingTop:15 }}>
-              <Button iconLeft transparent danger>
-                <Icon name='ios-bookmark'/>
-                <Text style={{ fontWeight: '500' }}>      BOOKMARKED VACANCY</Text>
-             </Button>
-             </View>
-             </TouchableOpacity>
-
-              <TouchableOpacity>
-              <View style={{ paddingTop:15 }}>
-                <Button iconLeft transparent danger>
-                  <Icon name='ios-settings'/>
-                  <Text style={{ fontWeight: '500' }}>      SETTINGS</Text>
-              </Button>
-              </View>
-             </TouchableOpacity>
-
-              <TouchableOpacity>
-                <View style={{ paddingTop:15 }}>
-                  <Button iconLeft transparent danger>
-                    <Icon name='ios-power'/>
-                    <Text style={{ fontWeight: '500' }}>      LOGOUT</Text>
-                </Button>
-                </View>
-             </TouchableOpacity>
-              </View>
-            </View>
-
-          </Content>
-        </Container>
-        )
-      }
-
       return (
         <Container style={styles.container}>
           <Content>
-            
-            <View style={{ paddingTop:10, paddingBottom: 15,  }} >
-            <TouchableOpacity style={{flex: 1, }}  onPress={() => this.props.navigation.navigate('Splash')}>
-                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', flexDirection: 'row' }}>
-                <Avatar
-                large
-                rounded
-                source={{uri: "https://s3.amazonaws.com/uifaces/faces/twitter/brynn/128.jpg"}}
-                onPress={() => console.log("Works!")}
-                activeOpacity={0.9}
-                />
-                   <View style={{ flexDirection: 'column' , paddingLeft: 15,}}>
-                   <Text style={{ fontWeight: '400' }}>Username</Text> 
-                   <Text>View and Edit Resume</Text> 
-                   </View> 
-                  
-                  <Icon name='ios-arrow-forward' style={{ paddingLeft:50 ,fontSize:14}}/>
-                </View>
-            </TouchableOpacity>
 
-            </View>
-            
-            <View>
-              <View style={{ justifyContent: 'space-around', borderTopWidth: 1, borderTopColor: '#eae5e5', paddingRight:15, paddingLeft:15, paddingBottom: 15}}>
-              <TouchableOpacity>
-              <View style={{ paddingTop:15 }}>
-              <Button iconLeft transparent danger>
-                <Icon name='ios-bookmark'/>
-                <Text style={{ fontWeight: '500' }}>      BOOKMARKED VACANCY</Text>
-             </Button>
-             </View>
-             </TouchableOpacity>
-
-              <TouchableOpacity>
-              <View style={{ paddingTop:15 }}>
-                <Button iconLeft transparent danger>
-                  <Icon name='ios-settings'/>
-                  <Text style={{ fontWeight: '500' }}>      SETTINGS</Text>
+          <ListItem 
+          icon last>
+            <Left>
+              <Button style={{ backgroundColor: "#FD3C2D" }}>
+                <Icon active name="contact" />
               </Button>
-              </View>
-             </TouchableOpacity>
+            </Left>
+            <Body>
+              <Text>{this.state.token}</Text>
+            </Body>
+            <Right>
+              {Platform.OS === "ios" && <Icon active name="arrow-forward" />}
+            </Right>
+          </ListItem>
+          
+          <Separator bordered noTopBorder />
 
-              <TouchableOpacity>
-                <View style={{ paddingTop:15 }}>
-                  <Button iconLeft transparent danger>
-                    <Icon name='ios-power'/>
-                    <Text style={{ fontWeight: '500' }}>      LOGOUT</Text>
-                </Button>
-                </View>
-             </TouchableOpacity>
-              </View>
-            </View>
+          <ListItem icon
+          onPress={() => this.navigateTo()}>
+            <Left>
+              <Button style={{ backgroundColor: "#FD3C2D" }}>
+                <Icon active name="notifications" />
+              </Button>
+            </Left>
+            <Body>
+              <Text>Notifications</Text>
+            </Body>
+            <Right>
+              {Platform.OS === "ios" && <Icon active name="arrow-forward" />}
+            </Right>
+          </ListItem>
 
-          </Content>
+          <ListItem icon>
+            <Left>
+              <Button style={{ backgroundColor: "#007AFF" }}>
+                <Icon active name="bookmarks" />
+              </Button>
+            </Left>
+            <Body>
+              <Text>Bookmark Jobs</Text>
+            </Body>
+            <Right>
+              <Text>GeekyAnts</Text>
+              {Platform.OS === "ios" && <Icon active name="arrow-forward" />}
+            </Right>
+          </ListItem>
+
+          <ListItem icon>
+            <Left>
+              <Button style={{ backgroundColor: "#4CDA64" }}>
+                <Icon active name="filing" />
+              </Button>
+            </Left>
+            <Body>
+              <Text>Job Invitation</Text>
+            </Body>
+            <Right>
+              <Text>On</Text>
+              {Platform.OS === "ios" && <Icon active name="arrow-forward" />}
+            </Right>
+          </ListItem>
+
+          <Separator bordered />
+
+          <ListItem icon last 
+          onPress={() => this.loggout()}>
+            <Left>
+              <Button style={{ backgroundColor: "#FD3C2D" }}>
+                <Icon active name="power" />
+              </Button>
+            </Left>
+            <Body>
+              <Text>Log Out</Text>
+            </Body>
+            <Right>
+              {Platform.OS === "ios" && <Icon active name="arrow-forward" />}
+            </Right>
+          </ListItem>
+        </Content>
         </Container>
       );
     }
