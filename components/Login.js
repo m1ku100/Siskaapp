@@ -1,61 +1,119 @@
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View,  TouchableOpacity, TextInput, Alert,Image} from 'react-native';
+import {Platform, StyleSheet, Text, View,  TouchableOpacity, TextInput, Alert,Image, Button, AsyncStorage} from 'react-native';
 import { Container, Content } from 'native-base';
 
 export default class Login extends Component{
 
-    constructor(){
-        super();
-        this.state={
-          username: '',
-          email: '',
-          password: '',
-          repassword: '',
-        }
+    constructor(props){
+        super(props);
+        this.state = {
+            name: '',
+            hobby: '',
+            email: '',
+            password: '',
+            token: 'as',
+            isLoggedin: false
+        };
+        AsyncStorage.getItem('user', (error, result) => {
+            if (result) {
+                let resultParsed = JSON.parse(result)
+                this.setState({
+                    token: resultParsed.access_token,
+                    isLoggedin: resultParsed.isLoggedin
+                });
+            }
+        });
       }
 
-    register(){
-        const {username} = this.state;
+    //submiting and fetching data 
+    submit(){
         const {email} = this.state;
         const {password} = this.state;
-        const {repassword} = this.state;
+        let data = {
+            email: email,
+            password : password
+        }
+        fetch('http://192.168.16.14:8000/jwt/login',{
+            method: 'post',
+            header:{
+                'Accept': 'application/json',
+				'Content-type': 'application/json'
+            },
+            body:JSON.stringify(data)
+        }).then((response)=>response.json())
+        .then((responseJson)=> {
+            //check if succes is false render Alert to show the errors
+            if(!((responseJson) || {}).success){
+               Alert.alert(
+                   'Warning!!',
+                   ((responseJson) || {}).error,
+                   [
+                    {text: 'OK', onPress: () => console.log('OK Pressed')},
+                   ]
+               ) 
+            }else{ //all good 
+                this.saveData(((responseJson) || {}).access_token)
+            }
+
+        })
+    }
+
+    //set Token to storage
+    saveData(token) {
+      let tkn = token;
+      let data = {
+          access_token: tkn,
+          isLoggedin: true
+      }
+
+      AsyncStorage.setItem('user', JSON.stringify(data));
+
+      this.setState({
+          token: token,
+      });
+      //alert('Data tersimpan');
+      this.props.navigation.navigate('Profile')
+    }
+
+    async deleteData() {
+        try {
+            await AsyncStorage.removeItem('user').then(alert('Data telah terhapus!!'))
+          } catch (err) {
+            alert(`The error is: ${err}`)
+          }
+    }
+    //check if isLoggedin true will navigate to profileScreen
+    componentDidMount(){
+
     }
 
     render(){
         return(
-            <Container style={styles.container}>
-                <Content>
+            <View style={styles.container}>
+            <Text>{this.state.token}</Text>
+            <Text style={styles.instructions}>
+                Nama: {this.state.name}{'\n'}
+                Hobi: {this.state.hobby}
+            </Text>
+            <TextInput style={styles.textInput}
                 
-                <View style={styles.loginContainer}>
-                    <Image  style={styles.logo} source={require('../assets/siska_mock_type.png')}  />
-                </View>
-
-                <View style={{ paddingTop: 32 }}>
-                <TextInput style = {styles.input} 
-               autoCapitalize="none" 
-               onSubmitEditing={() => this.passwordInput.focus()} 
-               autoCorrect={false} 
-               keyboardType='email-address' 
-               returnKeyType="next" 
-               placeholder='Email or Mobile Num' 
-               placeholderTextColor='grey'
-               
-               />
-
-                <TextInput style = {styles.input}   
-              returnKeyType="go" 
-              ref={(input)=> this.passwordInput = input} 
-              placeholder='Password' 
-              placeholderTextColor='grey' 
-              secureTextEntry/>
-
-                <TouchableOpacity style={styles.buttonContainer} >
-                <Text  style={styles.buttonText}>Sign in</Text>
-                </TouchableOpacity> 
-                </View>
-
-                </Content>
-            </Container>
+                onChangeText={email => this.setState({email})}
+                placeholder='Email'
+            />
+            <TextInput style={styles.textInput}
+                
+                onChangeText={password => this.setState({password})}
+                placeholder='Password'
+            />
+            <Button
+                title='Simpan'
+                onPress={() => this.submit()}
+            />
+            <Button
+                title='Hapus'
+                onPress={this.deleteData.bind(this)}
+            />
+        </View>
         )   
     }
 

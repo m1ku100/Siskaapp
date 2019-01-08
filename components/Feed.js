@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View,  TouchableOpacity, TextInput, Alert} from 'react-native';
+import {Platform, StyleSheet, Text, View,  TouchableOpacity, TextInput, Alert, AsyncStorage} from 'react-native';
 import { Icon, Container, Content, Right, Left, Body, Button,} from 'native-base';
 import { Avatar } from 'react-native-elements';
 
@@ -12,6 +12,15 @@ export default class Feed extends Component{
     this.state={
       message: ''
     }
+    AsyncStorage.getItem('user', (error, result) => {
+      if (result) {
+          let resultParsed = JSON.parse(result)
+          this.setState({
+              name: resultParsed.name,
+              hobby: resultParsed.hobby
+          });
+      }
+  });
   }
 
   updateValue(text, field){

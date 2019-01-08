@@ -11,18 +11,25 @@ import {Platform, StyleSheet, Text, View} from 'react-native';
 import { createBottomTabNavigator } from 'react-navigation';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { StackNavigator } from 'react-navigation';
-
+import { Provider } from 'react-redux';
 //screen
 import Home from './components/Home';
+import store  from './components/_Reducer/index';
+import CounterAction from './components/_Action/Action'
+
 
 
 
 export default class App extends Component{
+	constructor(props){
+		super(props)
+	}
 
-	
 	render() {
 		return (
-			<AppStackNav />
+			<Provider store={store}>
+				<AppStackNav />
+			</Provider>
 			);
 		}
 		

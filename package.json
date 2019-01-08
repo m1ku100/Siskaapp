@@ -7,13 +7,13 @@
     "test": "jest"
   },
   "dependencies": {
-    "native-base": "^2.8.0",
+    "native-base": "^2.10.0",
     "react": "16.5.0",
     "react-native": "0.57.1",
     "react-native-elements": "^0.19.1",
     "react-native-render-html": "^3.10.0",
     "react-native-vector-icons": "^5.0.0",
-    "react-navigation": "^2.16.0",
+    "react-navigation": "^2.18.3",
     "react-redux": "^5.1.1",
     "redux": "^4.0.1"
   },
@@ -22,7 +22,7 @@
     "jest": "23.6.0",
     "metro-react-native-babel-preset": "0.45.6",
     "react-test-renderer": "16.5.0",
-    "redux-devtools": "^3.4.2"
+    "redux-devtools": "^3.5.0"
   },
   "jest": {
     "preset": "react-native"

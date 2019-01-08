@@ -29,7 +29,9 @@ import Swipe from './swipe';
 
 
 export default class Home extends Component{
-  
+  constructor(props){
+		super(props)
+	}
   render() {
     return (
       <StackNav/>
