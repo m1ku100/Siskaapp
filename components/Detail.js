@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View,  Image,  ScrollView, ActivityIndicator,} from 'react-native';
+import {Platform, StyleSheet, Text, View,  Image,  ScrollView, ActivityIndicator,AsyncStorage, Alert} from 'react-native';
 import { createStackNavigator } from 'react-navigation';
 import { Icon, Container, Content, Button,} from 'native-base';
 import HTML from 'react-native-render-html';
@@ -11,22 +11,116 @@ export default class Profile extends Component{
             isLoading: true,
             dataSource: '',
             user: '',
-        }
+        };
+        AsyncStorage.getItem('user', (error, result) => {
+            if (result) {
+                let resultParsed = JSON.parse(result)
+                this.setState({
+                    token: resultParsed.access_token,
+                    isLoggedin: resultParsed.isLoggedin
+                });
+            }
+        });
     }
 
     /**
-     * For Apply Vacancy Event
-     */
-    __onpressApply(){
-
+ * 
+ * @param {*} id 
+ * @param {*} judul 
+ */
+ confirmbookmark(id, judul){
+    if(!this.state.isLoggedin){
+      Alert.alert('Warning!!',
+        'Please Login to use this feature',
+        [
+          {text: 'Cancel', onPress: () => console.log('Cancel Pressed')},
+          {text: 'Login', onPress: () => this.props.navigation.navigate('Login')},
+        ])
+    }else{
+      Alert.alert(
+        'Bookmark Vacancy '+judul,
+        'Are you sure want to apply this vacancy ? ',
+        [
+          {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+          {text: 'OK', onPress: () => this.bookmark(id)},
+        ],
+        { cancelable: false }
+        )
     }
-
-    /**
-     * For Bookmark Vacancy Event
-     */
-    __onpressBookmark(){
-
+   }
+  
+   bookmark(vacancy){
+    fetch('http://192.168.16.14:8000/jwt/vacancy/bookmark?token='+this.state.token,{
+      method:'post',
+      headers:{
+        'Accept': 'application/json',
+        'Content-type': 'application/json'
+      }, body: JSON.stringify({
+            vacancy_id: vacancy
+      })
+    }).then((response) => response.json())
+    .then((responseJson) =>{
+     Alert.alert(responseJson.status,
+     responseJson.message,
+      [
+        {text: 'OK', onPress: () => console.log('OK Pressed')},
+      ]);
+    })
+    .catch((error)=>{
+      console.error(error);
+    });
+  
+   }
+  
+   /**
+    * Check if user was login
+    * 
+    * @param {*} id 
+    */
+   confirm(id, judul){
+  
+    if(!this.state.isLoggedin){
+      Alert.alert('Warning!!',
+        'Please Login to use this feature',
+        [
+          {text: 'Cancel', onPress: () => console.log('Cancel Pressed')},
+          {text: 'Login', onPress: () => this.props.navigation.navigate('Login')},
+        ])
+    }else{
+      Alert.alert(
+        'Apply Vacancy '+judul,
+        'Are you sure want to apply this vacancy ? ',
+        [
+          {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+          {text: 'OK', onPress: () => this.apply(id)},
+        ],
+        { cancelable: false }
+        )
     }
+   }
+  
+   apply(vacancy){
+    fetch('http://192.168.16.14:8000/jwt/vacancy/apply?token='+this.state.token,{
+      method:'post',
+      headers:{
+        'Accept': 'application/json',
+        'Content-type': 'application/json'
+      }, body: JSON.stringify({
+            vacancy_id: vacancy
+      })
+    }).then((response) => response.json())
+    .then((responseJson) =>{
+     Alert.alert(responseJson.status,
+     responseJson.message,
+      [
+        {text: 'OK', onPress: () => console.log('OK Pressed')},
+      ]);
+    })
+    .catch((error)=>{
+      console.error(error);
+    });
+  
+   }
 
     componentDidMount = () => {
         const { navigation } = this.props;
@@ -97,13 +191,16 @@ export default class Profile extends Component{
 
                                 {/** Edit profile takes up 3/4th **/}
                                     <Button 
+                                    onPress={()=>this.confirm(this.state.dataSource.id,this.state.dataSource.judul)}
                                     style={{ flex: 3, marginLeft: 10, justifyContent: 'center', height: 30, backgroundColor: '#fa5555'}}>
                                     <Text style={styles.text}>Apply</Text>
                                     </Button>
 
 
                                 {/** Settings takes up  1/4th place **/}
-                                <Button style={{
+                                <Button 
+                                onPress={()=> this.confirmbookmark(this.state.dataSource.id,this.state.dataSource.judul)}
+                                style={{
                                     flex: 1,
                                     height: 30,
                                     marginRight: 10, marginLeft: 5,
