@@ -21,7 +21,6 @@ import {
   Right,
   Body,
   Spinner} from 'native-base';
-  import { createBottomTabNavigator } from 'react-navigation';
   import HTML from 'react-native-render-html';
 
   //Screen
@@ -43,6 +42,7 @@ export default class swipe extends Component{
       card: cards,
       dataSource: [cards],
       isLoggedin:  false,
+      isproceeded: false
     };
 
     AsyncStorage.getItem('user', (error, result) => {
@@ -112,20 +112,28 @@ export default class swipe extends Component{
   * @param {*} id 
   */
  confirm(id, judul){
+  this.setState({
+    isproceeded: true
+  });
 
   if(!this.state.isLoggedin){
     Alert.alert('Warning!!',
       'Please Login to use this feature',
       [
-        {text: 'Cancel', onPress: () => console.log('Cancel Pressed')},
+        {text: 'Cancel', onPress: () => this.setState({
+          isproceeded: false
+        })},
         {text: 'Login', onPress: () => this.props.navigation.navigate('Login')},
       ])
   }else{
     Alert.alert(
-      'Apply Vacancy '+judul,
+      'Apply Vacancy '+id,
       'Are you sure want to apply this vacancy ? ',
       [
-        {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+        {text: 'Cancel', onPress: () => this.setState({
+          isproceeded: false
+        }),
+         style: 'cancel'},
         {text: 'OK', onPress: () => this.apply(id)},
       ],
       { cancelable: false }
@@ -149,7 +157,9 @@ export default class swipe extends Component{
     [
       {text: 'OK', onPress: () => console.log('OK Pressed')},
     ]);
-  })
+  }).then(this.setState({
+      isproceeded: false
+  }))
   .catch((error)=>{
     console.error(error);
   });
@@ -176,7 +186,7 @@ export default class swipe extends Component{
      
    }
 render() {
-  
+  const isproceeded = this.state.isproceeded;
   if(this.state.isLoading){
     return(
       <View style={{flex: 1, padding: 20}}>
@@ -266,13 +276,16 @@ render() {
             </Left>
             <Body>
               <View style={{ flexDirection:'row',alignSelf: 'center', paddingLeft:40}}>
+              {isproceeded ? <Spinner color="red"  /> : 
               <Button
                 block 
                 transparent
                 onPress={() => this.confirm(item.id, item.judul)}
                 >
                 <Icon name="paper-plane" style={{ color:'#ED4A6A' }} /><Text style={{ color: "#ED4A6A", fontSize:14}} >Apply</Text>
-              </Button>
+              </Button>}
+              
+
               </View>
             </Body>
             <Right>

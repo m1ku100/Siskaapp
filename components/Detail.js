@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View,  Image,  ScrollView, ActivityIndicator,AsyncStorage, Alert} from 'react-native';
 import { createStackNavigator } from 'react-navigation';
-import { Icon, Container, Content, Button,} from 'native-base';
+import { Icon, Container, Content, Button, Spinner,} from 'native-base';
 import HTML from 'react-native-render-html';
 
 export default class Profile extends Component{
@@ -11,6 +11,7 @@ export default class Profile extends Component{
             isLoading: true,
             dataSource: '',
             user: '',
+            isproceeded: false
         };
         AsyncStorage.getItem('user', (error, result) => {
             if (result) {
@@ -23,12 +24,12 @@ export default class Profile extends Component{
         });
     }
 
-    /**
+ /**
  * 
  * @param {*} id 
  * @param {*} judul 
  */
- confirmbookmark(id, judul){
+confirmbookmark(id, judul){
     if(!this.state.isLoggedin){
       Alert.alert('Warning!!',
         'Please Login to use this feature',
@@ -78,20 +79,28 @@ export default class Profile extends Component{
     * @param {*} id 
     */
    confirm(id, judul){
+    this.setState({
+      isproceeded: true
+    });
   
     if(!this.state.isLoggedin){
       Alert.alert('Warning!!',
         'Please Login to use this feature',
         [
-          {text: 'Cancel', onPress: () => console.log('Cancel Pressed')},
+          {text: 'Cancel', onPress: () => this.setState({
+            isproceeded: false
+          })},
           {text: 'Login', onPress: () => this.props.navigation.navigate('Login')},
         ])
     }else{
       Alert.alert(
-        'Apply Vacancy '+judul,
+        'Apply Vacancy '+id,
         'Are you sure want to apply this vacancy ? ',
         [
-          {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+          {text: 'Cancel', onPress: () => this.setState({
+            isproceeded: false
+          }),
+           style: 'cancel'},
           {text: 'OK', onPress: () => this.apply(id)},
         ],
         { cancelable: false }
@@ -115,13 +124,14 @@ export default class Profile extends Component{
       [
         {text: 'OK', onPress: () => console.log('OK Pressed')},
       ]);
-    })
+    }).then(this.setState({
+        isproceeded: false
+    }))
     .catch((error)=>{
       console.error(error);
     });
   
    }
-
     componentDidMount = () => {
         const { navigation } = this.props;
         const id = navigation.getParam('id', '');
@@ -144,6 +154,7 @@ export default class Profile extends Component{
      }
 
     render() {
+        const isproceeded = this.state.isproceeded;
         if(this.state.isLoading){
             return(
                 <View style={{flex: 1, padding: 20}}>
@@ -191,9 +202,11 @@ export default class Profile extends Component{
 
                                 {/** Edit profile takes up 3/4th **/}
                                     <Button 
-                                    onPress={()=>this.confirm(this.state.dataSource.id,this.state.dataSource.judul)}
+                                    onPress={()=>this.confirm(this.state.dataSource.id, this.state.dataSource.judul)}
                                     style={{ flex: 3, marginLeft: 10, justifyContent: 'center', height: 30, backgroundColor: '#fa5555'}}>
-                                    <Text style={styles.text}>Apply</Text>
+                                    {isproceeded ? <Spinner color="white"/> :<Text style={styles.text}>Apply</Text>}
+                                    
+
                                     </Button>
 
 
