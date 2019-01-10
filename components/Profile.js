@@ -14,7 +14,10 @@ import { Container,
   Switch,
   Radio,
   Picker,
-  Separator} from 'native-base';
+  Separator,
+Thumbnail,
+IconNB,
+Item} from 'native-base';
 import { Avatar } from 'react-native-elements';
 
 export default class Profile extends Component{
@@ -23,7 +26,8 @@ export default class Profile extends Component{
     super(props);
     this.state={
       isLoggedin:  false,
-      refreshing: false
+      refreshing: false,
+      user: '',
     };
     
     AsyncStorage.getItem('user', (error, result) => {
@@ -37,17 +41,24 @@ export default class Profile extends Component{
   });
   }
 
-forceUpdate = () =>{
-  AsyncStorage.getItem('user', (error, result) => {
-    if (result) {
-        let resultParsed = JSON.parse(result)
-        this.setState({
-            token: resultParsed.access_token,
-            isLoggedin: resultParsed.isLoggedin
-        });
-    }
-});
-}
+  fetchData(token){
+    
+    
+    fetch('http://192.168.16.14:8000/jwt/me?token='+token,{
+      method: 'get'
+    })
+    .then((response) => response.json())
+    .then((responseJson) =>{
+      this.setState({
+        dataSource: responseJson,
+        user: responseJson.user,
+        isLoading: false,
+       })
+    }).catch((error)=>{
+      alert(error)
+    })
+  
+  }
   navigateTo(route){
   }
 
@@ -70,14 +81,39 @@ forceUpdate = () =>{
   }
 
   componentDidMount(){
-    this.forceUpdate()
+    if(this.state.isLoggedin){
+
+    }else{
+    AsyncStorage.getItem('user', (error, result) => {
+      if (result) {
+          let resultParsed = JSON.parse(result);
+          let df = resultParsed.access_token;
+          this.fetchData(df)
+      }
+    });
+  }
   }
 
     render() {
+      const isLoggedin = this.state.isLoggedin;
+      const user = this.state.user;
       return (
         <Container style={styles.container}>
           <Content>
-
+          {isLoggedin ? 
+          <ListItem avatar last
+          style={{ marginBottom:20 }}>
+          <Left>
+            <Thumbnail size={55} source={{ uri:(this.state.user || {}).ava } }/>
+          </Left>
+          <Body>
+            <Text style={{ fontWeight: '500' }}>{(this.state.dataSource || {}).name}</Text>
+            <Text numberOfLines={1} note>
+            {(this.state.dataSource || {}).email}
+            </Text>
+          </Body>
+          </ListItem>
+          : 
           <ListItem 
           icon last>
             <Left>
@@ -91,7 +127,8 @@ forceUpdate = () =>{
             <Right>
               {Platform.OS === "ios" && <Icon active name="arrow-forward" />}
             </Right>
-          </ListItem>
+          </ListItem>}
+          
           
           <Separator bordered noTopBorder />
 

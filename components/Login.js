@@ -72,7 +72,7 @@ export default class Login extends Component{
           token: token,
       });
       //alert('Data tersimpan');
-      this.props.navigation.goBack()
+      this.props.navigation.navigate('Reload')
     }
 
     async deleteData() {

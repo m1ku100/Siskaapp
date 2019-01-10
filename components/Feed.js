@@ -16,8 +16,8 @@ export default class Feed extends Component{
       if (result) {
           let resultParsed = JSON.parse(result)
           this.setState({
-              name: resultParsed.name,
-              hobby: resultParsed.hobby
+              token: resultParsed.access_token,
+              isLoggedin: resultParsed.isLoggedin
           });
       }
   });
@@ -74,6 +74,7 @@ export default class Feed extends Component{
                    <View style={{ flexDirection: 'column' , paddingLeft: 10, paddingRight:15, paddingTop:20}}>
                    <TextInput
                       //onChangeText={(text) =>this.updateValue(text,'message')}
+                      defaultValue={this.state.token}
                       onChangeText= {message => this.setState({message})}
                       style={{height: 100, borderColor: '#333', borderWidth: 0.5}}
                     />
