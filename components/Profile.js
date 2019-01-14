@@ -42,8 +42,6 @@ export default class Profile extends Component{
   }
 
   fetchData(token){
-    
-    
     fetch('http://192.168.16.14:8000/jwt/me?token='+token,{
       method: 'get'
     })
@@ -101,18 +99,21 @@ export default class Profile extends Component{
         <Container style={styles.container}>
           <Content>
           {isLoggedin ? 
-          <ListItem avatar last
-          style={{ marginBottom:20 }}>
-          <Left>
-            <Thumbnail size={55} source={{ uri:(this.state.user || {}).ava } }/>
-          </Left>
-          <Body>
-            <Text style={{ fontWeight: '500' }}>{(this.state.dataSource || {}).name}</Text>
-            <Text numberOfLines={1} note>
-            {(this.state.dataSource || {}).email}
-            </Text>
-          </Body>
-          </ListItem>
+         
+            <ListItem avatar last
+            onPress={() => this.props.navigation.navigate('Me')}
+            style={{ marginBottom:20 }}>
+            <Left>
+              <Thumbnail size={55} source={{ uri:(this.state.user || {}).ava } }/>
+            </Left>
+            <Body>
+              <Text style={{ fontWeight: '500' }}>{(this.state.dataSource || {}).name}</Text>
+              <Text numberOfLines={1} note>
+              {(this.state.dataSource || {}).email}
+              </Text>
+            </Body>
+            </ListItem>
+         
           : 
           <ListItem 
           icon last>
@@ -122,7 +123,7 @@ export default class Profile extends Component{
               </Button>
             </Left>
             <Body>
-              <Text>{this.state.token}</Text>
+              <Text>Please Login</Text>
             </Body>
             <Right>
               {Platform.OS === "ios" && <Icon active name="arrow-forward" />}

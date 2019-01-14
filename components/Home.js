@@ -26,6 +26,7 @@ import Login from './Login';
 import Register from './Register';
 import Search from './Search';
 import Swipe from './swipe';
+import Me from './Profile_partial/Me';
 
 
 export default class Home extends Component{
@@ -126,6 +127,9 @@ export default class Home extends Component{
         },
       }),
     },
+    Reload:{
+      screen:Home
+    },
     Swipe:{
       screen:Swipe,
       navigationOptions: () => ({
@@ -215,6 +219,12 @@ export default class Home extends Component{
           marginTop:5,
           
         },
+      })
+    },
+    Me:{
+      screen: Me,
+      navigationOptions: () =>({
+        title: 'My Profile',
       })
     }
   });
