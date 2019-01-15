@@ -11,7 +11,10 @@ export default class Me extends Component{
     constructor(props){
         super(props);
         this.state={
-            isloading : true
+            isloading : false,
+            exp: [],
+            edu:[],
+            organization:[]
         };
         AsyncStorage.getItem('user', (error, result) => {
             if (result) {
@@ -25,14 +28,20 @@ export default class Me extends Component{
     }
 
     fetchdata(token){
-        fetch('http://192.168.16.14:8000/jwt/me?token='+token,{
+        this.setState({
+            isLoading:true
+        });
+        fetch('http://192.168.16.14:8000/jwt/profile/me?token='+token,{
          method: 'get'
         })
         .then((response) => response.json())
         .then((responseJson) =>{
           this.setState({
             dataSource: responseJson,
-            user: responseJson.user,
+            user: responseJson.source,
+            exp: responseJson.exp.data,
+            edu: responseJson.educations.data,
+            organization: responseJson.organization.data,
             isLoading: false,
            })
         }).catch((error)=>{
@@ -140,17 +149,27 @@ export default class Me extends Component{
                         </View>
                         
                         <View style={{ flex:1, }}>
-                        <Card>
+                        {this.state.edu.map((v,index) => {
+                         return (
+                            <Card style={styles.mb} key={index}>
                             <CardItem header>
-                                <Text>Name of School</Text>
+                              <Text style={{ fontWeight:'bold' }}>{v.degrees} of {v.majors} in {v.school_name} </Text>
                             </CardItem>
-                        <CardItem>
-                            <Body>
-                                <Text>For Education</Text>
-                                <Text>Like it? Keep Scrolling...</Text>
-                            </Body>
+                            <CardItem>
+                              <Body>
+                                <Text>
+                                  Get on the mobile fast track with NativeBase, the
+                                  fastest-growing platform and tool set for iOS and Android
+                                  development.
+                                </Text>
+                              </Body>
                             </CardItem>
-                        </Card>
+                            <CardItem footer>
+                              <Text></Text>
+                            </CardItem>
+                          </Card>
+                         )
+                        })}
                         </View>
                     </View>
 
@@ -173,24 +192,34 @@ export default class Me extends Component{
                         </View>
                         
                         <View style={{ flex:1}}>
-                        <Card>
+                        {this.state.exp.map((v,index) => {
+                         return (
+                            <Card style={styles.mb} key={index}>
                             <CardItem header>
-                                <Text>Job Title</Text>
+                              <Text style={{ fontWeight:'bold' }}>{v.company}</Text>
                             </CardItem>
-                        <CardItem>
-                            <Body>
-                                <Text>For Work Experience</Text>
-                                <Text>Like it? Keep Scrolling...</Text>
-                            </Body>
+                            <CardItem>
+                              <Body>
+                                <Text>
+                                  Get on the mobile fast track with NativeBase, the
+                                  fastest-growing platform and tool set for iOS and Android
+                                  development.
+                                </Text>
+                              </Body>
                             </CardItem>
-                        </Card>
+                            <CardItem footer>
+                              <Text>{v.start_date} - {v.end_date} </Text>
+                            </CardItem>
+                          </Card>
+                         )
+                        })}
                         </View>
                     </View>
 
                     <View>
                         <View style={{ flex:1, flexDirection: 'row' }}>
                             <Left>
-                                <Text style={styles.title}>Organization Experience</Text>
+                                <Text style={styles.title}>Organization Experience </Text>
                             </Left>
                             <Right>
                             <Button
@@ -206,17 +235,40 @@ export default class Me extends Component{
                         </View>
                         
                         <View style={{ flex:1, }}>
-                        <Card>
-                            <CardItem header>
-                                <Text>Organization Name</Text>
-                            </CardItem>
-                        <CardItem>
-                            <Body>
-                                <Text>For Organization Experience</Text>
-                                <Text>Like it? Keep Scrolling...</Text>
-                            </Body>
-                            </CardItem>
-                        </Card>
+                        {this.state.organization.map((v,index) => {
+                         if(this.state.organization.length < 1){
+                            return(
+                                <Card>
+                                <CardItem>
+                                  <Body>
+                                    <Text>You don't have any data for this section</Text>
+                                  </Body>
+                                </CardItem>
+                              </Card>
+                            )
+                         }else{
+                            return (
+                                <Card style={styles.mb} key={index}>
+                                <CardItem header>
+                                <Text style={{ fontWeight:'bold' }}>{v.name}</Text>
+                                </CardItem>
+                                <CardItem>
+                                <Body>
+                                    <Text>
+                                    Get on the mobile fast track with NativeBase, the
+                                    fastest-growing platform and tool set for iOS and Android
+                                    development.
+                                    </Text>
+                                </Body>
+                                </CardItem>
+                                <CardItem footer>
+                                <Text>{v.start_date} - {v.end_date} </Text>
+                                </CardItem>
+                            </Card>
+                            )
+                         }
+
+                        })}
                         </View>
                     </View>
 
