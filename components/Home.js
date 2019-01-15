@@ -28,6 +28,23 @@ import Search from './Search';
 import Swipe from './swipe';
 import Me from './Profile_partial/Me';
 
+//Personal Info
+import Create_Contact from './Profile_partial/Contact/Create';
+import Edit_Contact from './Profile_partial/Contact/Edit';
+
+import Create_Education from './Profile_partial/Education/Create';
+import Edit_Education from './Profile_partial/Education/Edit';
+
+import Create_Organization from './Profile_partial/Organization/Create';
+import Edit_Organization from './Profile_partial/Organization/Edit';
+
+import Create_Personal from './Profile_partial/Personal/Create';
+import Edit_Personal from './Profile_partial/Personal/Edit';
+
+import Create_Work from './Profile_partial/Work/Create';
+import Edit_Work from './Profile_partial/Work/Edit';
+
+
 
 export default class Home extends Component{
   constructor(props){
@@ -226,7 +243,67 @@ export default class Home extends Component{
       navigationOptions: () =>({
         title: 'My Profile',
       })
-    }
+    },
+    C_Contact:{
+      screen: Create_Contact,
+      navigationOptions: () =>({
+        title: 'Contact',
+      })
+    },
+    E_Contact:{
+      screen: Edit_Contact,
+      navigationOptions: () =>({
+        title: 'Contact',
+      })
+    },
+    C_Education:{
+      screen: Create_Education,
+      navigationOptions: () =>({
+        title: 'Education',
+      })
+    },
+    E_Education:{
+      screen: Edit_Education,
+      navigationOptions: () =>({
+        title: 'Education',
+      })
+    },
+    C_Organization:{
+      screen: Create_Organization,
+      navigationOptions: () =>({
+        title: 'Organization',
+      })
+    },
+    E_Organization:{
+      screen: Edit_Organization,
+      navigationOptions: () =>({
+        title: 'Organization',
+      })
+    },
+    C_Personal:{
+      screen: Create_Personal,
+      navigationOptions: () =>({
+        title: 'Personal',
+      })
+    },
+    E_Personal:{
+      screen: Edit_Personal,
+      navigationOptions: () =>({
+        title: 'Personal',
+      })
+    },
+    C_Work:{
+      screen: Create_Work,
+      navigationOptions: () =>({
+        title: 'Work',
+      })
+    },
+    E_Work:{
+      screen: Edit_Work,
+      navigationOptions: () =>({
+        title: 'Work',
+      })
+    },
   });
 
   const styles = StyleSheet.create({
