@@ -26,7 +26,11 @@ import Login from './Login';
 import Register from './Register';
 import Search from './Search';
 import Swipe from './swipe';
+
+//Profile Additional screen
 import Me from './Profile_partial/Me';
+import Bookmark from './Bookmark';
+import Invitation from './Invitation';
 
 //Personal Info
 import Create_Contact from './Profile_partial/Contact/Create';
@@ -237,6 +241,12 @@ export default class Home extends Component{
           
         },
       })
+    },
+    Bookmark:{
+      screen: Bookmark
+    },
+    Invitation:{
+      screen: Invitation
     },
     Me:{
       screen: Me,
