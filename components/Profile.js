@@ -17,7 +17,7 @@ import { Container,
   Separator,
 Thumbnail,
 IconNB,
-Item} from 'native-base';
+Item,} from 'native-base';
 import { Avatar } from 'react-native-elements';
 
 export default class Profile extends Component{
@@ -50,6 +50,7 @@ export default class Profile extends Component{
       this.setState({
         dataSource: responseJson,
         user: responseJson.user,
+        count: responseJson.count,
         isLoading: false,
        })
     }).catch((error)=>{
@@ -58,6 +59,7 @@ export default class Profile extends Component{
   
   }
   navigateTo(route){
+    this.props.navigation.navigate(route);
   }
 
   async loggout(){
@@ -134,7 +136,7 @@ export default class Profile extends Component{
           <Separator bordered noTopBorder />
 
           <ListItem icon
-          onPress={() => this.navigateTo()}>
+          onPress={() => this.navigateTo('Notife')}>
             <Left>
               <Button style={{ backgroundColor: "#FD3C2D" }}>
                 <Icon active name="notifications" />
@@ -148,7 +150,8 @@ export default class Profile extends Component{
             </Right>
           </ListItem>
 
-          <ListItem icon>
+          <ListItem icon
+          onPress={() => this.navigateTo('Bookmark')}>
             <Left>
               <Button style={{ backgroundColor: "#007AFF" }}>
                 <Icon active name="bookmarks" />
@@ -158,12 +161,16 @@ export default class Profile extends Component{
               <Text>Bookmark Jobs</Text>
             </Body>
             <Right>
-              <Text>GeekyAnts</Text>
-              {Platform.OS === "ios" && <Icon active name="arrow-forward" />}
+              {isLoggedin ? 
+              <Badge style={{ backgroundColor:'#FD3C2D' }}>
+            <Text style={{ color:'white', fontWeight:'bold' }}>{(this.state.count || {}).bookmarks}</Text>
+            </Badge> :
+            <Text></Text>}
             </Right>
           </ListItem>
 
-          <ListItem icon>
+          <ListItem icon
+          onPress={() => this.navigateTo('Invitation')}>
             <Left>
               <Button style={{ backgroundColor: "#4CDA64" }}>
                 <Icon active name="filing" />
@@ -173,8 +180,11 @@ export default class Profile extends Component{
               <Text>Job Invitation</Text>
             </Body>
             <Right>
-              <Text>On</Text>
-              {Platform.OS === "ios" && <Icon active name="arrow-forward" />}
+              {isLoggedin ? 
+              <Badge style={{ backgroundColor:'#FD3C2D' }}>
+            <Text style={{ color:'white', fontWeight:'bold' }}>{(this.state.count || {}).invite}</Text>
+            </Badge> :
+            <Text></Text>}
             </Right>
           </ListItem>
 
