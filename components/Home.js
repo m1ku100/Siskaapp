@@ -243,10 +243,18 @@ export default class Home extends Component{
       })
     },
     Bookmark:{
-      screen: Bookmark
+      screen: Bookmark,
+      navigationOptions: () =>({
+        title: 'Bookmark',
+        subtitle: ''
+      })
     },
     Invitation:{
-      screen: Invitation
+      screen: Invitation,
+      navigationOptions: () =>({
+        title: 'Invitations',
+        subtitle: 'Here is your job invitations from agencies'
+      })
     },
     Me:{
       screen: Me,
