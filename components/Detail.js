@@ -264,7 +264,7 @@ confirmbookmark(id, judul){
                     <View style={{ flex:1 , paddingTop:10 }}>
                         <Text style={ styles.textinfo}>About the Company</Text>
                         <View style={{ alignItems: 'center' }}>
-                        <HTML html={""+ this.state.dataSource.tentang  }  />
+                        <HTML html={""+ this.state.dataSource.tentang + "" }  />
                         </View>
                     </View>
                 </View>
