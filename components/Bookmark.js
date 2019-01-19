@@ -6,7 +6,7 @@ import {
     Title,
     Button,
     IconNB,
-    DeckSwiper,
+    Subtitle,
     Card,
     CardItem,
     Icon,
@@ -20,6 +20,10 @@ import {
 
 
 export default class Bookmark extends Component{
+    static navigationOptions = {
+        header: null,
+    };
+    
     constructor(props){
         super(props);
         this.state ={ 
@@ -125,6 +129,21 @@ export default class Bookmark extends Component{
 
       return (
         <Container style={styles.container}>
+            <Header hasSubtitle
+            style={{ backgroundColor:'#fa5555' }}
+            androidStatusBarColor="#fa6666">
+            <Left>
+                <Button transparent onPress={() => this.props.navigation.goBack()}>
+                <Icon name="arrow-back" />
+                </Button>
+            </Left>
+            <Body>
+                <Title>Bookmarks</Title>
+                <Subtitle>Your saved vacancies</Subtitle>
+            </Body>
+            <Right />
+            </Header>
+
         <Content>
             <View style={{ flex: 1, padding: 12 }}>
                 
