@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View,  TouchableOpacity, Image, AsyncStorage} from 'react-native';
+import {Platform, StyleSheet, Text, View,  TouchableOpacity, Image, AsyncStorage, Alert} from 'react-native';
 import { Icon,
     Container,
     Content, 
@@ -39,6 +39,112 @@ export default class Me extends Component{
                 });
             }
         });
+    }
+
+    confirmdelete(type,id){
+        Alert.alert(
+          'Delete '+ type +' data ',
+          'Are you sure want to delete this data ? ',
+          [
+            {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+            {text: 'Delete', onPress: () => {
+                if(type == 'education'){
+                    this.education(id);
+                }if(type == 'work'){
+                    this.work(id)
+                }if(type == 'organization'){
+                    this.organization(id)
+                }
+            }},
+          ],
+          { cancelable: false }
+          )
+    }
+      
+    editto(type,id){
+        if(type == 'education'){
+            this.props.navigation.navigate('E_Education',{
+                id: id
+            })
+        }if(type == 'work'){
+            this.props.navigation.navigate('E_Work',{
+                id: id
+            })
+        }if(type == 'organization'){
+            this.props.navigation.navigate('E_Organization',{
+                id: id
+            })
+        }
+        
+    }
+
+    education(id){
+     fetch('http://192.168.16.14:8000/jwt/profile/edu/delete/'+id+'?token='+this.state.token,{
+       method:'post',
+       headers:{
+         'Accept': 'application/json',
+         'Content-type': 'application/json'
+       }, body: JSON.stringify({
+             id: id
+       })
+     }).then((response) => response.json())
+     .then((responseJson) =>{
+      Alert.alert(responseJson.status,
+      responseJson.message,
+       [
+         {text: 'OK', onPress: () => console.log('OK Pressed')},
+       ]);
+     })
+     .catch((error)=>{
+       console.error(error);
+     });
+     return this.componentDidMount()
+    }
+
+    work(id){
+        fetch('http://192.168.16.14:8000/jwt/profile/exp/delete/'+id+'?token='+this.state.token,{
+          method:'post',
+          headers:{
+            'Accept': 'application/json',
+            'Content-type': 'application/json'
+          }, body: JSON.stringify({
+                id: id
+          })
+        }).then((response) => response.json())
+        .then((responseJson) =>{
+         Alert.alert(responseJson.status,
+         responseJson.message,
+          [
+            {text: 'OK', onPress: () => console.log('OK Pressed')},
+          ]);
+        })
+        .catch((error)=>{
+          console.error(error);
+        });
+        return this.componentDidMount()
+    }
+
+    organization(id){
+        fetch('http://192.168.16.14:8000/jwt/profile/organization/delete/'+id+'?token='+this.state.token,{
+          method:'post',
+          headers:{
+            'Accept': 'application/json',
+            'Content-type': 'application/json'
+          }, body: JSON.stringify({
+                id: id
+          })
+        }).then((response) => response.json())
+        .then((responseJson) =>{
+         Alert.alert(responseJson.status,
+         responseJson.message,
+          [
+            {text: 'OK', onPress: () => console.log('OK Pressed')},
+          ]);
+        })
+        .catch((error)=>{
+          console.error(error);
+        });
+        return this.componentDidMount()
     }
 
     fetchdata(token){
@@ -272,7 +378,7 @@ export default class Me extends Component{
                         </View>
                     </View>
 
-                    <View>
+                    <View style={{ paddingTop:20 }}>
                         <View style={{ flex:1, flexDirection: 'row' }}>
                             <Left>
                                 <Text style={styles.title}>Education</Text>
@@ -304,7 +410,8 @@ export default class Me extends Component{
                                     danger 
                                     transparent
                                     rounded
-                                    small >
+                                    small
+                                    onPress={() => this.editto('education',v.id)} >
                                 <View style={{ flexDirection:'row' }}>
                                 <IconNB name={"ios-settings"} style={{ color: "#ED4A6A" }} />
                                 </View>
@@ -314,7 +421,8 @@ export default class Me extends Component{
                                     danger 
                                     transparent
                                     rounded
-                                    small >
+                                    small 
+                                    onPress={() => this.confirmdelete('education',v.id)} >
                                 <View style={{ flexDirection:'row' }}>
                                 <IconNB name={"ios-trash"} style={{ color: "#ED4A6A" }} />
                                 </View>
@@ -340,7 +448,7 @@ export default class Me extends Component{
                         </View>
                     </View>
 
-                    <View>
+                    <View style={{ paddingTop:20 }}>
                         <View style={{ flex:1, flexDirection: 'row' }}>
                             <Left>
                                 <Text style={styles.title}>Work Experience</Text>
@@ -372,7 +480,9 @@ export default class Me extends Component{
                                     danger 
                                     transparent
                                     rounded
-                                    small >
+                                    small
+                                    onPress={() => this.editto('work',v.id)}  
+                                   >
                                 <View style={{ flexDirection:'row' }}>
                                 <IconNB name={"ios-settings"} style={{ color: "#ED4A6A" }} />
                                 </View>
@@ -382,7 +492,8 @@ export default class Me extends Component{
                                     danger 
                                     transparent
                                     rounded
-                                    small >
+                                    small
+                                    onPress={() => this.confirmdelete('work',v.id)}   >
                                 <View style={{ flexDirection:'row' }}>
                                 <IconNB name={"ios-trash"} style={{ color: "#ED4A6A" }} />
                                 </View>
@@ -408,7 +519,7 @@ export default class Me extends Component{
                         </View>
                     </View>
 
-                    <View>
+                    <View style={{ paddingTop:20 }}>
                         <View style={{ flex:1, flexDirection: 'row' }}>
                             <Left>
                                 <Text style={styles.title}>Organization Experience </Text>
@@ -451,7 +562,9 @@ export default class Me extends Component{
                                     danger 
                                     transparent
                                     rounded
-                                    small >
+                                    small
+                                    onPress={() => this.editto('organization',v.id)}
+                                     >
                                 <View style={{ flexDirection:'row' }}>
                                 <IconNB name={"ios-settings"} style={{ color: "#ED4A6A" }} />
                                 </View>
@@ -461,7 +574,8 @@ export default class Me extends Component{
                                     danger 
                                     transparent
                                     rounded
-                                    small >
+                                    small 
+                                    onPress={() => this.confirmdelete('organization',v.id)} >
                                 <View style={{ flexDirection:'row' }}>
                                 <IconNB name={"ios-trash"} style={{ color: "#ED4A6A" }} />
                                 </View>
